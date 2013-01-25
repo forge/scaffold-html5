@@ -25,8 +25,8 @@
                 <img src="images/forge-logo.png" alt="JBoss Forge"></img>
                 <nav class="well sidebar-nav">
                     <ul id="sidebar-entries" class="nav nav-list">
-                        <#list entities as entity>
-                    	<li><a href="#${entity.name}">${entity.name}</a></li>
+                        <#list entityNames as entityName>
+                    	<li><a href="#${entityName}">${entityName}</a></li>
                     	</#list>
                     </ul>
                 </nav>

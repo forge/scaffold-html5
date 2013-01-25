@@ -3,6 +3,7 @@ package org.jboss.forge.scaffold.html5;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,26 +93,27 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         config.setClassForTemplateLoading(getClass(), "/scaffold/angularjs");
         config.setObjectWrapper(new DefaultObjectWrapper());
 
-        List<String> entities = new ArrayList<String>();
+        ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
+        List<String> entityNames = new ArrayList<String>();
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         FileResource<?> partialsDirectory = web.getWebResource("partials");
         for (Resource<?> resource : partialsDirectory.listResources()) {
-            entities.add(resource.getName());
+            entityNames.add(resource.getName());
         }
         Map root = new HashMap();
-        root.put("entities", entities);
+        root.put("entityNames", entityNames);
 
         try {
             Template indexTemplate = config.getTemplate("index.html.ftl");
-            Writer out = new OutputStreamWriter(System.out);
-            indexTemplate.process(root, out);
-            out.flush();
+            Writer contents = new StringWriter();
+            indexTemplate.process(root, contents);
+            contents.flush();
+            result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource("index.html"), contents.toString(), overwrite));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TemplateException e) {
             throw new RuntimeException(e);
         }
-        ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         return result;
     }
 
@@ -122,22 +124,26 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         Configuration config = new Configuration();
         config.setClassForTemplateLoading(getClass(), "/scaffold/angularjs");
         config.setObjectWrapper(new DefaultObjectWrapper());
-        
+
+        ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
+        WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         Map root = new HashMap();
         root.put("entity", entity);
 
         try {
             Template indexTemplate = config.getTemplate("partials/detail.html.ftl");
-            Writer out = new OutputStreamWriter(System.out);
+            Writer out = new StringWriter();
             indexTemplate.process(root, out);
             out.flush();
+            result.add(ScaffoldUtil.createOrOverwrite(prompt,
+                    web.getWebResource("/partials/" + entity.getName() + "/detail.html"), out.toString(), overwrite));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TemplateException e) {
             throw new RuntimeException(e);
         }
         generateIndex(targetDir, template, overwrite);
-        return new ArrayList<Resource<?>>();
+        return result;
     }
 
     @Override
