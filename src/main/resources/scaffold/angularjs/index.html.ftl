@@ -3,13 +3,11 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Forge Prototype</title>
-    <link href="components/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="styles/styles.css" rel="stylesheet" media="screen">
-    <link href="components/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-	<script src="scripts/vendor/angular.min.js"></script>
-	<script src="scripts/vendor/angular-resource.min.js"></script>
-	<script src="js/app.js"></script>
-	<script src="js/company.js"></script>
+    <link href="styles/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="styles/main.css" rel="stylesheet" media="screen">
+    <link href="styles/bootstrap-responsive.css" rel="stylesheet" media="screen">
+	<script src="scripts/vendor/angular.js"></script>
+	<script src="scripts/vendor/angular-resource.js"></script>
 </head>
 <body>
 	<div class="navbar navbar-inverse navbar-fixed-top">

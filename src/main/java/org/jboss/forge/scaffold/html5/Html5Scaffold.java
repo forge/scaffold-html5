@@ -72,6 +72,12 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
 
         // TODO: Make this dynamic and dependent on the HTML5 framework. Choose AngularJS libraries (or Backbone.js, Aerogear or
         // any other) based on configuration.
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/bootstrap.css"), getClass()
+                .getResourceAsStream("/scaffold/angularjs/styles/bootstrap.css"), overwrite));
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/main.css"),
+                getClass().getResourceAsStream("/scaffold/angularjs/styles/main.css"), overwrite));
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/bootstrap-responsive.css"),
+                getClass().getResourceAsStream("/scaffold/angularjs/styles/bootstrap-responsive.css"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/scripts/vendor/angular.js"), getClass()
                 .getResourceAsStream("/scaffold/angularjs/scripts/vendor/angular.js"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/scripts/vendor/angular-resource.js"),
@@ -128,9 +134,12 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         Map root = new HashMap();
         // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
-        // We need this to use contextual naming schemes.
+        // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
         root.put("entity", entity);
 
+        // TODO: The list of template files to be processed per-entity (like detail.html.ftl and search.html.ftl) needs to
+        // be obtained dynamically. Another list to be processed for all entities (like index.html.ftl) also needs to be
+        // maintained. In short, a template should be associated with a processing directive like PER_ENTITY, ALL_ENTITIES etc.
         try {
             Template indexTemplate = config.getTemplate("partials/detail.html.ftl");
             Writer out = new StringWriter();
@@ -143,7 +152,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         } catch (TemplateException e) {
             throw new RuntimeException(e);
         }
-        
+
         try {
             Template indexTemplate = config.getTemplate("partials/search.html.ftl");
             Writer out = new StringWriter();
