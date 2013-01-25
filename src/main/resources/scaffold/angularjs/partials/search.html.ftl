@@ -1,21 +1,17 @@
-<h2>Search for Companys</h2>
-<form id="companySearch" class="form-horizontal">
+<h2>Search for ${entity.name}s</h2>
+<form id="${entity.name}Search" class="form-horizontal">
+    <#list entity.fields as field>
     <div class="control-group">
-        <label for="name" class="control-label">Name</label>
+        <label for="${field.name}" class="control-label">${field.name}</label>
         <div class="controls">
-            <input id="name" name="name" type="text" ng-model="search.name" placeholder="Enter the company name"></input>
+            <input id="${field.name}" name="${field.name}" type="text" ng-model="search.${field.name}" placeholder="Enter the ${entity.name} ${field.name}"></input>
         </div>
     </div>
-    <div class="control-group">
-        <label for="ticker" class="control-label">Ticker</label>
-        <div class="controls">
-            <input id="ticker" name="ticker" type="text" ng-model="search.ticker" placeholder="Enter the company ticker"></input>
-        </div>
-    </div>
+    </#list>
     <div class="control-group">
         <div class="controls">
-            <a id="Search" name="Search" class="btn btn-primary" ng-click="searchCompany()"><i class="icon-search icon-white"></i> Search</a>
-            <a id="Create" name="Create" class="btn" href="#/companys/new"><i class="icon-plus-sign"></i> Create New</a>
+            <a id="Search" name="Search" class="btn btn-primary" ng-click="search${entity.name}()"><i class="icon-search icon-white"></i> Search</a>
+            <a id="Create" name="Create" class="btn" href="#/${entity.name}/new"><i class="icon-plus-sign"></i> Create New</a>
         </div>
     </div>
 </form>
@@ -23,15 +19,17 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Ticker</th>
+            <#list entity.fields as field>
+                <th>${field.name}</th>
+            </#list>
             </tr>
         </thead>
         <tbody id="search-results-body">
             <!-- <tr ng-repeat="result in searchResults | filter:search| startFrom:currentPage*pageSize | limitTo:pageSize"> -->
             <tr ng-repeat="result in searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
-                <td><a href="#/companys/edit/{{result.id}}">{{result.name}}</a></td>
-                <td><a href="#/companys/edit/{{result.id}}">{{result.ticker}}</a></td>
+            <#list entity.fields as field>
+                <td><a href="#/${entity.name}s/edit/{{result.id}}">{{result.${field.name}}}</a></td>
+            </#list>
             </tr>
         </tbody>
     </table>

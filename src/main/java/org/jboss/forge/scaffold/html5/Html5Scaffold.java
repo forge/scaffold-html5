@@ -119,7 +119,6 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
 
     @Override
     public List<Resource<?>> generateFromEntity(String targetDir, Resource<?> template, JavaClass entity, boolean overwrite) {
-        // TODO Auto-generated method stub
         System.out.println("Generating from Entity");
         Configuration config = new Configuration();
         config.setClassForTemplateLoading(getClass(), "/scaffold/angularjs");
@@ -128,6 +127,8 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         Map root = new HashMap();
+        // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
+        // We need this to use contextual naming schemes.
         root.put("entity", entity);
 
         try {
@@ -137,6 +138,19 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
             out.flush();
             result.add(ScaffoldUtil.createOrOverwrite(prompt,
                     web.getWebResource("/partials/" + entity.getName() + "/detail.html"), out.toString(), overwrite));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
+        
+        try {
+            Template indexTemplate = config.getTemplate("partials/search.html.ftl");
+            Writer out = new StringWriter();
+            indexTemplate.process(root, out);
+            out.flush();
+            result.add(ScaffoldUtil.createOrOverwrite(prompt,
+                    web.getWebResource("/partials/" + entity.getName() + "/search.html"), out.toString(), overwrite));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TemplateException e) {
