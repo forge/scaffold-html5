@@ -33,6 +33,10 @@ function New${entityName}Controller($scope,$location,${entityName}Resource) {
 			$location.path('/${entityName}s/edit/' + id);
 		});
 	};
+	
+    $scope.cancel = function() {
+        $location.path("/${entityName}s");
+    };
 }
 
 function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}Resource) {
