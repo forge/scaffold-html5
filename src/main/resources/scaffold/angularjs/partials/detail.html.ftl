@@ -11,7 +11,7 @@
         <div class="controls">
             <button id="save${entity.name}" name="save${entity.name}" class="btn btn-primary" ng-disabled="isClean() || new${entity.name}.$invalid" ng-click="save()"><i class="icon-ok-sign icon-white"></i> Save</button>
             <button id="cancel" name="cancel" class="btn" ng-click="cancel()"><i class="icon-remove-sign"></i> Cancel</button>
-            <button id="delete${entity.name}" name="delete${entity.name}" class="btn" ng-show="${entity.name}.id" ng-click="delete()"><i class="icon-trash"></i> Delete</button>
+            <button id="delete${entity.name}" name="delete${entity.name}" class="btn" ng-show="${entity.name?lower_case}.id" ng-click="delete()"><i class="icon-trash"></i> Delete</button>
         </div>
     <div>
 </form>

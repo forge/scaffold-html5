@@ -39,10 +39,12 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
 	var self = this;
 	$scope.disabled = false;
 
-	${entityName}Resource.get({${entityName}Id:$routeParams.${entityName}Id}, function(${entityName?lower_case}){
-		self.original = ${entityName?lower_case};
-		$scope.${entityName?lower_case} = new ${entityName}Resource(self.original);
-	});
+	$scope.get = function() {
+	    ${entityName}Resource.get({${entityName}Id:$routeParams.${entityName}Id}, function(data){
+            self.original = data;
+            $scope.${entityName?lower_case} = new ${entityName}Resource(self.original);
+        });
+	};
 
 	$scope.isClean = function() {
 		return angular.equals(self.original, $scope.${entityName?lower_case});
@@ -50,7 +52,7 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
 
 	$scope.save = function() {
 		$scope.${entityName?lower_case}.$update(function(){
-			$location.path('/${entityName}s');
+            $scope.get();
 		});
 	};
 
@@ -63,5 +65,7 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
 			$location.path("/${entityName}s");
 		});
 	};
+	
+	$scope.get();
 };
 </#list>
