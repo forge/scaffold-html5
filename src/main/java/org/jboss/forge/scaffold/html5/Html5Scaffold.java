@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
+import org.jboss.forge.project.facets.MetadataFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
@@ -74,8 +75,8 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         // any other) based on configuration.
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/bootstrap.css"), getClass()
                 .getResourceAsStream("/scaffold/angularjs/styles/bootstrap.css"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/main.css"),
-                getClass().getResourceAsStream("/scaffold/angularjs/styles/main.css"), overwrite));
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/main.css"), getClass()
+                .getResourceAsStream("/scaffold/angularjs/styles/main.css"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/styles/bootstrap-responsive.css"),
                 getClass().getResourceAsStream("/scaffold/angularjs/styles/bootstrap-responsive.css"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/scripts/vendor/angular.js"), getClass()
@@ -108,6 +109,8 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         }
         Map root = new HashMap();
         root.put("entityNames", entityNames);
+        MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
+        root.put("project", metadata);
 
         try {
             Template indexTemplate = config.getTemplate("index.html.ftl");
@@ -115,6 +118,45 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
             indexTemplate.process(root, contents);
             contents.flush();
             result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource("index.html"), contents.toString(), overwrite));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            Template appJsTemplate = config.getTemplate("scripts/app.js.ftl");
+            Writer contents = new StringWriter();
+            appJsTemplate.process(root, contents);
+            contents.flush();
+            result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource("scripts/app.js"), contents.toString(),
+                    overwrite));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            Template controllerTemplate = config.getTemplate("scripts/controllers.js.ftl");
+            Writer contents = new StringWriter();
+            controllerTemplate.process(root, contents);
+            contents.flush();
+            result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource("scripts/controllers.js"),
+                    contents.toString(), overwrite));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            Template controllerTemplate = config.getTemplate("scripts/filters.js.ftl");
+            Writer contents = new StringWriter();
+            controllerTemplate.process(root, contents);
+            contents.flush();
+            result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource("scripts/filters.js"), contents.toString(),
+                    overwrite));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TemplateException e) {
@@ -160,6 +202,20 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
             out.flush();
             result.add(ScaffoldUtil.createOrOverwrite(prompt,
                     web.getWebResource("/partials/" + entity.getName() + "/search.html"), out.toString(), overwrite));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            Template indexTemplate = config.getTemplate("scripts/entityModule.js.ftl");
+            Writer out = new StringWriter();
+            indexTemplate.process(root, out);
+            out.flush();
+            result.add(ScaffoldUtil.createOrOverwrite(prompt,
+                    web.getWebResource("/scripts/" + entity.getName() + "/" + entity.getName() + ".js"), out.toString(),
+                    overwrite));
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (TemplateException e) {

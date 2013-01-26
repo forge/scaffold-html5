@@ -3,7 +3,7 @@
     <div class="control-group">
         <label for="${field.name}" class="control-label">${field.name}</label>
         <div class="controls">
-            <input id="${field.name}" name="${field.name}" type="text" ng-model="${entity.name}.${field.name}"></input>
+            <input id="${field.name}" name="${field.name}" type="text" ng-model="${entity.name?lower_case}.${field.name}"></input>
         </div>
     </div>
     </#list>

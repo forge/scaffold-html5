@@ -11,7 +11,7 @@
     <div class="control-group">
         <div class="controls">
             <a id="Search" name="Search" class="btn btn-primary" ng-click="search${entity.name}()"><i class="icon-search icon-white"></i> Search</a>
-            <a id="Create" name="Create" class="btn" href="#/${entity.name}/new"><i class="icon-plus-sign"></i> Create New</a>
+            <a id="Create" name="Create" class="btn" href="#/${entity.name}s/new"><i class="icon-plus-sign"></i> Create New</a>
         </div>
     </div>
 </form>
@@ -26,7 +26,7 @@
         </thead>
         <tbody id="search-results-body">
             <!-- <tr ng-repeat="result in searchResults | filter:search| startFrom:currentPage*pageSize | limitTo:pageSize"> -->
-            <tr ng-repeat="result in searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+            <tr ng-repeat="result in searchResults | filter:search | startFrom:currentPage*pageSize | limitTo:pageSize">
             <#list entity.fields as field>
                 <td><a href="#/${entity.name}s/edit/{{result.id}}">{{result.${field.name}}}</a></td>
             </#list>
