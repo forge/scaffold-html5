@@ -10,7 +10,7 @@
     </#list>
     <div class="control-group">
         <div class="controls">
-            <a id="Search" name="Search" class="btn btn-primary" ng-click="search${entity.name}()"><i class="icon-search icon-white"></i> Search</a>
+            <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
             <a id="Create" name="Create" class="btn" href="#/${entity.name}s/new"><i class="icon-plus-sign"></i> Create New</a>
         </div>
     </div>
@@ -25,7 +25,6 @@
             </tr>
         </thead>
         <tbody id="search-results-body">
-            <!-- <tr ng-repeat="result in searchResults | filter:search| startFrom:currentPage*pageSize | limitTo:pageSize"> -->
             <tr ng-repeat="result in searchResults | filter:search | startFrom:currentPage*pageSize | limitTo:pageSize">
             <#list entity.fields as field>
                 <td><a href="#/${entity.name}s/edit/{{result.id}}">{{result.${field.name}}}</a></td>
@@ -33,12 +32,17 @@
             </tr>
         </tbody>
     </table>
-    <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
-        Previous
-    </button>
-    {{currentPage+1}}/{{numberOfPages()}}
-    <button ng-disabled="currentPage >= numberOfPages() - 1" ng-click="currentPage=currentPage+1">
-        Next
-    </button>
+    <div class="pagination pagination-centered">
+        <ul>
+            <li ng-class="{disabled:currentPage == 0}">
+                <a id="prev" href ng-click="previous()">«</a>
+            </li>
+            <li ng-repeat="n in pageRange" ng-class="{active:currentPage == n}" ng-click="setPage(n)">
+                <a href ng-bind="n + 1">1</a>
+            </li>
+            <li ng-class="{disabled: currentPage == (numberOfPages() - 1)}">
+                <a id="next" href ng-click="next()">»</a>
+            </li>
+        </ul>
+    </div>
 </div>
-<div id="pagination"></div>

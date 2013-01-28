@@ -6,19 +6,42 @@ function Search${entityName}Controller($scope,$filter,$http,${entityName}Resourc
 	$scope.currentPage = 0;
 	$scope.pageSize= 10;
 	$scope.searchResults = [];
+	$scope.pageRange = [];
 	$scope.numberOfPages = function() {
 		var result = Math.ceil($scope.searchResults.length/$scope.pageSize);
 		return (result == 0) ? 1 : result;
 	};
 
-	$scope.search${entityName} = function() {
-		$scope.searchResults = ${entityName}Resource.query();
+	$scope.performSearch = function() {
+		$scope.searchResults = ${entityName}Resource.query(function(){
+            var max = $scope.numberOfPages();
+            $scope.pageRange = [];
+            for(var ctr=0;ctr<max;ctr++) {
+                $scope.pageRange.push(ctr);
+            }
+		});
 		/*$http.post('rest/${entityName}s/search',$scope.search).success(function(data,status){
 			$scope.searchResults = data;
 		});*/
 	};
+	
+	$scope.previous = function() {
+	   if($scope.currentPage > 0) {
+	       $scope.currentPage--;
+	   }
+	};
+	
+	$scope.next = function() {
+	   if($scope.currentPage < ($scope.numberOfPages() - 1) ) {
+	       $scope.currentPage++;
+       }
+	};
+	
+	$scope.setPage = function(n) {
+	   $scope.currentPage = n;
+	}
 
-	$scope.search${entityName}();
+	$scope.performSearch();
 };
 
 function New${entityName}Controller($scope,$location,${entityName}Resource) {
