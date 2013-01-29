@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.jboss.forge.parser.java.Field;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
@@ -22,6 +23,9 @@ import org.jboss.forge.resources.Resource;
 import org.jboss.forge.scaffold.AccessStrategy;
 import org.jboss.forge.scaffold.ScaffoldProvider;
 import org.jboss.forge.scaffold.TemplateStrategy;
+import org.jboss.forge.scaffold.html5.metawidget.inspector.ForgeInspector;
+import org.jboss.forge.scaffold.html5.metawidget.inspector.propertystyle.ForgePropertyStyle;
+import org.jboss.forge.scaffold.html5.metawidget.inspector.propertystyle.ForgePropertyStyleConfig;
 import org.jboss.forge.scaffold.util.ScaffoldUtil;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.Alias;
@@ -30,6 +34,14 @@ import org.jboss.forge.shell.plugins.RequiresFacet;
 import org.jboss.forge.spec.javaee.CDIFacet;
 import org.jboss.forge.spec.javaee.EJBFacet;
 import org.jboss.forge.spec.javaee.PersistenceFacet;
+import org.metawidget.inspector.composite.CompositeInspector;
+import org.metawidget.inspector.composite.CompositeInspectorConfig;
+import org.metawidget.inspector.impl.BaseObjectInspectorConfig;
+import org.metawidget.inspector.jpa.JpaInspector;
+import org.metawidget.inspector.jpa.JpaInspectorConfig;
+import org.metawidget.inspector.propertytype.PropertyTypeInspector;
+import org.metawidget.util.XmlUtils;
+import org.w3c.dom.Element;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -174,10 +186,43 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
 
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
+        
         Map root = new HashMap();
         // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
         // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
-        root.put("entity", entity);
+        root.put("entityName", entity.getName());
+        
+        ForgePropertyStyleConfig forgePropertyStyleConfig = new ForgePropertyStyleConfig();
+        forgePropertyStyleConfig.setProject(project);
+        BaseObjectInspectorConfig baseObjectInspectorConfig = new BaseObjectInspectorConfig();
+        baseObjectInspectorConfig.setPropertyStyle(new ForgePropertyStyle(forgePropertyStyleConfig));
+        
+        PropertyTypeInspector propertyTypeInspector = new PropertyTypeInspector(baseObjectInspectorConfig);
+        
+        ForgeInspector forgeInspector = new ForgeInspector(baseObjectInspectorConfig);
+        
+        JpaInspectorConfig jpaInspectorConfig = new JpaInspectorConfig();
+        jpaInspectorConfig.setHideIds(true);
+        jpaInspectorConfig.setHideVersions(true);
+        jpaInspectorConfig.setHideTransients(true);
+        jpaInspectorConfig.setPropertyStyle(new ForgePropertyStyle(forgePropertyStyleConfig));
+        JpaInspector jpaInspector = new JpaInspector(jpaInspectorConfig);
+        
+        CompositeInspectorConfig compositeInspectorConfig = new CompositeInspectorConfig();
+        compositeInspectorConfig.setInspectors(propertyTypeInspector,forgeInspector,jpaInspector);
+        CompositeInspector compositeInspector = new CompositeInspector(compositeInspectorConfig);
+        
+        Element inspectionResult = compositeInspector.inspectAsDom(null, entity.getQualifiedName(), null);
+        Element inspectedEntity = XmlUtils.getFirstChildElement( inspectionResult );
+        
+        Element inspectedProperty = XmlUtils.getFirstChildElement(inspectedEntity);
+        List<Map<String,String>> viewPropertyAttributes = new ArrayList<Map<String,String>>();  
+        while (inspectedProperty != null) {
+            Map<String, String> propertyAttributes = XmlUtils.getAttributesAsMap(inspectedProperty);
+            viewPropertyAttributes.add(propertyAttributes);
+            inspectedProperty = XmlUtils.getNextSiblingElement(inspectedProperty);
+        }
+        root.put("properties", viewPropertyAttributes);
 
         // TODO: The list of template files to be processed per-entity (like detail.html.ftl and search.html.ftl) needs to
         // be obtained dynamically. Another list to be processed for all entities (like index.html.ftl) also needs to be

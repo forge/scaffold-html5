@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('${entity.name}',['ngResource']).
-    factory('${entity.name}Resource', function($resource){
-        var ${entity.name?lower_case} = $resource('rest/${entity.name?lower_case}s/:${entity.name}Id',{${entity.name}Id:'@id'},{'query':{method:'GET',isArray:true},'update':{method:'PUT'}});
-        return ${entity.name?lower_case};
+angular.module('${entityName}',['ngResource']).
+    factory('${entityName}Resource', function($resource){
+        var ${entityName?lower_case} = $resource('rest/${entityName?lower_case}s/:${entityName}Id',{${entityName}Id:'@id'},{'query':{method:'GET',isArray:true},'update':{method:'PUT'}});
+        return ${entityName?lower_case};
     });

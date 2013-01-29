@@ -1,17 +1,19 @@
-<h2>Search for ${entity.name}s</h2>
-<form id="${entity.name}Search" class="form-horizontal">
-    <#list entity.fields as field>
+<h2>Search for ${entityName}s</h2>
+<form id="${entityName}Search" class="form-horizontal">
+    <#list properties as property>
     <div class="control-group">
-        <label for="${field.name}" class="control-label">${field.name}</label>
+        <#if (property.hidden!"false") != "true">
+        <label for="${property.name}" class="control-label">${property.name}</label>
         <div class="controls">
-            <input id="${field.name}" name="${field.name}" type="text" ng-model="search.${field.name}" placeholder="Enter the ${entity.name} ${field.name}"></input>
+            <input id="${property.name}" name="${property.name}" type="text" ng-model="search.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
         </div>
+        </#if>
     </div>
     </#list>
     <div class="control-group">
         <div class="controls">
             <a id="Search" name="Search" class="btn btn-primary" ng-click="performSearch()"><i class="icon-search icon-white"></i> Search</a>
-            <a id="Create" name="Create" class="btn" href="#/${entity.name}s/new"><i class="icon-plus-sign"></i> Create New</a>
+            <a id="Create" name="Create" class="btn" href="#/${entityName}s/new"><i class="icon-plus-sign"></i> Create New</a>
         </div>
     </div>
 </form>
@@ -19,15 +21,15 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-            <#list entity.fields as field>
-                <th>${field.name}</th>
+            <#list properties as property>
+                <th>${property.name}</th>
             </#list>
             </tr>
         </thead>
         <tbody id="search-results-body">
             <tr ng-repeat="result in searchResults | filter:search | startFrom:currentPage*pageSize | limitTo:pageSize">
-            <#list entity.fields as field>
-                <td><a href="#/${entity.name}s/edit/{{result.id}}">{{result.${field.name}}}</a></td>
+            <#list properties as property>
+                <td><a href="#/${entityName}s/edit/{{result.id}}">{{result.${property.name}}}</a></td>
             </#list>
             </tr>
         </tbody>

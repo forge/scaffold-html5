@@ -8,6 +8,7 @@
     <properties>
         <forge.api.version>1.2.0.Final</forge.api.version>
         <freemarker.version>2.3.19</freemarker.version>
+        <metawidget.version>2.5</metawidget.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -44,6 +45,11 @@
             <artifactId>freemarker</artifactId>
             <version>${freemarker.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.metawidget.modules</groupId>
+            <artifactId>metawidget-all</artifactId>
+            <version>${metawidget.version}</version>
+        </dependency>
         
         <dependency>
             <groupId>javax.enterprise</groupId>
@@ -54,6 +60,21 @@
             <groupId>org.jboss.spec.javax.annotation</groupId>
             <artifactId>jboss-annotations-api_1.1_spec</artifactId>
             <scope>provided</scope>
+        </dependency>
+        
+        <!-- Needed for Inspectors -->
+
+        <!-- For the JPA Inspector -->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final</version>
+        </dependency>
+        <!-- For the Bean Validation Inspector -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>     
         </dependency>
         
         <!-- Testing -->
