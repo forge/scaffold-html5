@@ -4,7 +4,12 @@
         <#if (property.hidden!"false") == "false">
         <label for="${property.name}" class="control-label">${property.name}</label>
         <div class="controls">
-            <input id="${property.name}" name="${property.name}" type="text" required="${property.required!"false"}" ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
+            <#if property.required!"false" == "true">
+            <input id="${property.name}" name="${property.name}" type="text" required ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
+            </#if>
+            <#if property.required!"false" == "false">
+            <input id="${property.name}" name="${property.name}" type="text" ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
+            </#if>
         </div>
         </#if>
     </div>
