@@ -179,7 +179,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
 
     @Override
     public List<Resource<?>> generateFromEntity(String targetDir, Resource<?> template, JavaClass entity, boolean overwrite) {
-        System.out.println("Generating from Entity");
+        System.out.println("Generating artifacts from Entity:" + entity.getQualifiedName());
         Configuration config = new Configuration();
         config.setClassForTemplateLoading(getClass(), "/scaffold/angularjs");
         config.setObjectWrapper(new DefaultObjectWrapper());
@@ -214,11 +214,21 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         
         Element inspectionResult = compositeInspector.inspectAsDom(null, entity.getQualifiedName(), null);
         Element inspectedEntity = XmlUtils.getFirstChildElement( inspectionResult );
+        System.out.println(XmlUtils.nodeToString(inspectedEntity, true));
         
         Element inspectedProperty = XmlUtils.getFirstChildElement(inspectedEntity);
         List<Map<String,String>> viewPropertyAttributes = new ArrayList<Map<String,String>>();  
         while (inspectedProperty != null) {
+            System.out.println(XmlUtils.nodeToString(inspectedProperty, true));
             Map<String, String> propertyAttributes = XmlUtils.getAttributesAsMap(inspectedProperty);
+            String propertyType = propertyAttributes.get("type");
+            if (propertyType.equals(short.class.getName()) || propertyType.equals(int.class.getName())
+                    || propertyType.equals(long.class.getName()) || propertyType.equals(float.class.getName())
+                    || propertyType.equals(double.class.getName()) || propertyType.equals(Short.class.getName())
+                    || propertyType.equals(Integer.class.getName()) || propertyType.equals(Long.class.getName())
+                    || propertyType.equals(Float.class.getName()) || propertyType.equals(Double.class.getName())) {
+                propertyAttributes.put("type", "number");
+            }
             viewPropertyAttributes.add(propertyAttributes);
             inspectedProperty = XmlUtils.getNextSiblingElement(inspectedProperty);
         }
