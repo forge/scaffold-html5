@@ -4,12 +4,7 @@
         <#if (property.hidden!"false") == "false">
         <label for="${property.name}" class="control-label">${property.name}</label>
         <div class="controls">
-            <#if property.required!"false" == "true">
-            <input id="${property.name}" name="${property.name}" <#if property.type == "number">type="number"</#if><#if (property["datetime-type"]!"") == "date">type="date"</#if><#if (property["datetime-type"]!"") == "time">type="time"</#if><#if (property["datetime-type"]!"") == "both">type="datetime"</#if><#if property.type != "number" && (property["datetime-type"]!"") == "">type="text"</#if> required ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
-            </#if>
-            <#if property.required!"false" == "false">
-            <input id="${property.name}" name="${property.name}" <#if property.type == "number">type="number"</#if><#if (property["datetime-type"]!"") == "date">type="date"</#if><#if (property["datetime-type"]!"") == "time">type="time"</#if><#if (property["datetime-type"]!"") == "both">type="datetime"</#if><#if property.type != "number" && (property["datetime-type"]!"") == "">type="text"</#if> ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
-            </#if>
+            <input id="${property.name}" name="${property.name}" <#if property.type == "number">type="number"<#elseif (property["datetime-type"]!"") == "date">type="date"<#elseif (property["datetime-type"]!"") == "time">type="time"<#elseif (property["datetime-type"]!"") == "both">type="datetime"<#else>type="text"</#if> <#if property.required!"false" == "true">required</#if> ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
         </div>
         </#if>
     </div>
