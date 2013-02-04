@@ -2,6 +2,7 @@
 <html lang="en" ng-app="${project.projectName}">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>${project.projectName}</title>
     <link href="styles/bootstrap.css" rel="stylesheet" media="screen">
     <link href="styles/main.css" rel="stylesheet" media="screen">
