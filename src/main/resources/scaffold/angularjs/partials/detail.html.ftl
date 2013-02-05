@@ -4,7 +4,7 @@
         <#if (property.hidden!"false") == "false">
         <label for="${property.name}" class="control-label">${property.name?cap_first}</label>
         <div class="controls">
-            <#if (property["many-to-one"]!"false") == "true">
+            <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
             <select id="${property.name}" name="${property.name}" ng-model="${entityName?lower_case}.${property.name}" ng-options="${property.name?substring(0, 1)} as ${property.name?substring(0, 1)}.id for ${property.name?substring(0, 1)} in ${property.name}List">
                 <option value="">Choose a ${property.name?cap_first}</option>
             </select>

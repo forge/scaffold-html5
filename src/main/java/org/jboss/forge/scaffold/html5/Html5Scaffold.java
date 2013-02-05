@@ -1,6 +1,7 @@
 package org.jboss.forge.scaffold.html5;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
@@ -16,10 +17,12 @@ import org.jboss.forge.parser.java.Field;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
+import org.jboss.forge.project.facets.JavaSourceFacet;
 import org.jboss.forge.project.facets.MetadataFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
+import org.jboss.forge.resources.java.JavaResource;
 import org.jboss.forge.scaffold.AccessStrategy;
 import org.jboss.forge.scaffold.ScaffoldProvider;
 import org.jboss.forge.scaffold.TemplateStrategy;
@@ -208,6 +211,8 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         while (inspectedProperty != null) {
             System.out.println(XmlUtils.nodeToString(inspectedProperty, true));
             Map<String, String> propertyAttributes = XmlUtils.getAttributesAsMap(inspectedProperty);
+            
+            // Canonicalize all numerical types in Java to "number" for HTML5 form input type support
             String propertyType = propertyAttributes.get("type");
             if (propertyType.equals(short.class.getName()) || propertyType.equals(int.class.getName())
                     || propertyType.equals(long.class.getName()) || propertyType.equals(float.class.getName())
@@ -216,10 +221,25 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
                     || propertyType.equals(Float.class.getName()) || propertyType.equals(Double.class.getName())) {
                 propertyAttributes.put("type", "number");
             }
+
+            // Extract simple type name of the relationship types
+            String manyToOneRel = propertyAttributes.get("many-to-one");
+            if("true".equals(manyToOneRel)){
+                String manyToOneType = propertyAttributes.get("type");
+                propertyAttributes.put("simpleType", getSimpleName(manyToOneType));
+            }
+            String oneToOneRel = propertyAttributes.get("one-to-one");
+            if("true".equals(oneToOneRel)){
+                String oneToOneType = propertyAttributes.get("type");
+                propertyAttributes.put("simpleType", getSimpleName(oneToOneType));
+            }
+            
+            // Add the property attributes into a list, made accessible as a sequence to the FTL
             viewPropertyAttributes.add(propertyAttributes);
             inspectedProperty = XmlUtils.getNextSiblingElement(inspectedProperty);
         }
         root.put("properties", viewPropertyAttributes);
+        System.out.println("Root:" + root);
 
         // TODO: The list of template files to be processed per-entity (like detail.html.ftl and search.html.ftl) needs to
         // be obtained dynamically. Another list to be processed for all entities (like index.html.ftl) also needs to be
@@ -296,6 +316,17 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
     public TemplateStrategy getTemplateStrategy() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    private String getSimpleName(String manyToOneType) {
+        JavaSourceFacet java = this.project.getFacet(JavaSourceFacet.class);
+        try {
+            JavaResource relatedResource = java.getJavaResource(manyToOneType);
+            return relatedResource.getJavaSource().getName();
+        } catch (FileNotFoundException fileEx) {
+            // This is not supposed to happen, since the JPA entity class/file is supposed to be present by now.
+            throw new RuntimeException(fileEx);
+        }
     }
 
 }

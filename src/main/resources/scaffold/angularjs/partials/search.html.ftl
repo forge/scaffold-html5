@@ -5,7 +5,7 @@
         <#if (property.hidden!"false") != "true">
         <label for="${property.name}" class="control-label">${property.name?cap_first}</label>
         <div class="controls">
-            <#if (property["many-to-one"]!"false") == "true">
+            <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
             <select id="${property.name}" name="${property.name}" ng-model="search.${property.name}" ng-options="${property.name?substring(0, 1)} as ${property.name?substring(0, 1)}.id for ${property.name?substring(0, 1)} in ${property.name}List">
                 <option value="">Choose a ${property.name?cap_first}</option>
             </select>
@@ -38,7 +38,7 @@
             <tr ng-repeat="result in searchResults | filter:filterSearchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
             <#list properties as property>
             <#if (property.hidden!"false") != "true">
-                <#if (property["many-to-one"]!"false") == "true">
+                <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
                 <td><a href="#/${entityName}s/edit/{{result.id}}">{{result.${property.name}.id}}</a></td>
                 <#else>
                 <td><a href="#/${entityName}s/edit/{{result.id}}">{{result.${property.name}}}</a></td>

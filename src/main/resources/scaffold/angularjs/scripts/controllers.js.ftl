@@ -2,8 +2,8 @@
 
 function Search${entityName}Controller($scope,$filter,$http,${entityName}Resource
 <#list properties as property>
-<#if (property["many-to-one"]!"false") == "true">
-,${property.name?cap_first}Resource
+<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
+,${property.simpleType}Resource
 </#if>
 </#list>
 ) {
@@ -18,8 +18,8 @@ function Search${entityName}Controller($scope,$filter,$http,${entityName}Resourc
 		return (result == 0) ? 1 : result;
 	};
 	<#list properties as property>
-	<#if (property["many-to-one"]!"false") == "true">
-    $scope.${property.name}List = ${property.name?cap_first}Resource.queryAll();
+	<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
+    $scope.${property.name}List = ${property.simpleType}Resource.queryAll();
     </#if>
     </#list>
 
@@ -80,16 +80,16 @@ function Search${entityName}Controller($scope,$filter,$http,${entityName}Resourc
 
 function New${entityName}Controller($scope,$location,${entityName}Resource
 <#list properties as property>
-<#if (property["many-to-one"]!"false") == "true">
-, ${property.name?cap_first}Resource
+<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
+, ${property.simpleType}Resource
 </#if>
 </#list>
 ) {
 	$scope.disabled = false;
 	
 	<#list properties as property>
-	<#if (property["many-to-one"]!"false") == "true">
-	${property.name?cap_first}Resource.queryAll(function(data){
+	<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
+	${property.simpleType}Resource.queryAll(function(data){
         $scope.${property.name}List = angular.fromJson(JSON.stringify(data));
     });
     </#if>
@@ -112,8 +112,8 @@ function New${entityName}Controller($scope,$location,${entityName}Resource
 
 function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}Resource
 <#list properties as property>
-<#if (property["many-to-one"]!"false") == "true">
-, ${property.name?cap_first}Resource
+<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
+, ${property.simpleType}Resource
 </#if>
 </#list>
 ) {
@@ -125,8 +125,8 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
             self.original = data;
             $scope.${entityName?lower_case} = new ${entityName}Resource(self.original);
             <#list properties as property>
-            <#if (property["many-to-one"]!"false") == "true">
-            ${property.name?cap_first}Resource.queryAll(function(data) {
+            <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
+            ${property.simpleType}Resource.queryAll(function(data) {
                 $scope.${property.name}List = data;
                 angular.forEach($scope.${property.name}List, function(datum){
                     if(angular.equals(datum,$scope.${entityName?lower_case}.${property.name})) {
