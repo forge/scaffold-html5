@@ -110,7 +110,13 @@ function New${entityName}Controller($scope,$location,${entityName}Resource
     };
 }
 
-function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}Resource) {
+function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}Resource
+<#list properties as property>
+<#if (property["many-to-one"]!"false") == "true">
+, ${property.name?cap_first}Resource
+</#if>
+</#list>
+) {
 	var self = this;
 	$scope.disabled = false;
 
@@ -118,6 +124,19 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
 	    ${entityName}Resource.get({${entityName}Id:$routeParams.${entityName}Id}, function(data){
             self.original = data;
             $scope.${entityName?lower_case} = new ${entityName}Resource(self.original);
+            <#list properties as property>
+            <#if (property["many-to-one"]!"false") == "true">
+            ${property.name?cap_first}Resource.queryAll(function(data) {
+                $scope.${property.name}List = data;
+                angular.forEach($scope.${property.name}List, function(datum){
+                    if(angular.equals(datum,$scope.${entityName?lower_case}.${property.name})) {
+                        $scope.${entityName?lower_case}.${property.name} = datum;
+                        self.original.${property.name} = datum;
+                    }
+                });
+            });
+            </#if>
+            </#list>
         });
 	};
 
