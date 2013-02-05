@@ -150,19 +150,6 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         }
 
         try {
-            Template controllerTemplate = config.getTemplate("scripts/controllers.js.ftl");
-            Writer contents = new StringWriter();
-            controllerTemplate.process(root, contents);
-            contents.flush();
-            result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource("scripts/controllers.js"),
-                    contents.toString(), overwrite));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (TemplateException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
             Template controllerTemplate = config.getTemplate("scripts/filters.js.ftl");
             Writer contents = new StringWriter();
             controllerTemplate.process(root, contents);
@@ -237,6 +224,19 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         // TODO: The list of template files to be processed per-entity (like detail.html.ftl and search.html.ftl) needs to
         // be obtained dynamically. Another list to be processed for all entities (like index.html.ftl) also needs to be
         // maintained. In short, a template should be associated with a processing directive like PER_ENTITY, ALL_ENTITIES etc.
+        try {
+            Template controllerTemplate = config.getTemplate("scripts/controllers.js.ftl");
+            Writer contents = new StringWriter();
+            controllerTemplate.process(root, contents);
+            contents.flush();
+            result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(entity.getName() + "Controllers.js"),
+                    contents.toString(), overwrite));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (TemplateException e) {
+            throw new RuntimeException(e);
+        }
+        
         try {
             Template indexTemplate = config.getTemplate("partials/detail.html.ftl");
             Writer out = new StringWriter();

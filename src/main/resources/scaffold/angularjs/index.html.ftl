@@ -10,7 +10,9 @@
 	<script src="scripts/vendor/angular.js"></script>
 	<script src="scripts/vendor/angular-resource.js"></script>
 	<script src="scripts/app.js"></script>
-	<script src="scripts/controllers.js"></script>
+	<#list entityNames as entityName>
+    <script src="${entityName}Controllers.js"></script>
+    </#list>
 	<script src="scripts/filters.js"></script>
     <#list entityNames as entityName>
     <script src="scripts/${entityName}/${entityName}.js"></script>

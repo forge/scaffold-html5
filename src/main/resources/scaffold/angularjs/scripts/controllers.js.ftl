@@ -1,7 +1,13 @@
 'use strict';
 
-<#list entityNames as entityName>
-function Search${entityName}Controller($scope,$filter,$http,${entityName}Resource) {
+function Search${entityName}Controller($scope,$filter,$http,${entityName}Resource
+<#list properties as property>
+<#if (property["many-to-one"]!"false") == "true">
+,${property.name?cap_first}Resource
+</#if>
+</#list>
+) {
+    $scope.filter = $filter;
 	$scope.search={};
 	$scope.currentPage = 0;
 	$scope.pageSize= 10;
@@ -11,9 +17,14 @@ function Search${entityName}Controller($scope,$filter,$http,${entityName}Resourc
 		var result = Math.ceil($scope.searchResults.length/$scope.pageSize);
 		return (result == 0) ? 1 : result;
 	};
+	<#list properties as property>
+	<#if (property["many-to-one"]!"false") == "true">
+    $scope.${property.name}List = ${property.name?cap_first}Resource.queryAll();
+    </#if>
+    </#list>
 
 	$scope.performSearch = function() {
-		$scope.searchResults = ${entityName}Resource.query(function(){
+		$scope.searchResults = ${entityName}Resource.queryAll(function(){
             var max = $scope.numberOfPages();
             $scope.pageRange = [];
             for(var ctr=0;ctr<max;ctr++) {
@@ -39,13 +50,50 @@ function Search${entityName}Controller($scope,$filter,$http,${entityName}Resourc
 	
 	$scope.setPage = function(n) {
 	   $scope.currentPage = n;
-	}
+	};
+
+    $scope.filterSearchResults = function(result) {
+        var flag = true;
+        for(var key in $scope.search){
+            if($scope.search.hasOwnProperty(key)) {
+                var expected = $scope.search[key];
+                if(expected == null || expected === "") {
+                    continue;
+                }
+                var actual = result[key];
+                if(angular.isObject(expected)) {
+                    flag = flag && angular.equals(expected,actual);
+                }
+                else {
+                    flag = flag && (actual.toString().indexOf(expected.toString()) != -1);
+                }
+                if(flag === false) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
 
 	$scope.performSearch();
 };
 
-function New${entityName}Controller($scope,$location,${entityName}Resource) {
+function New${entityName}Controller($scope,$location,${entityName}Resource
+<#list properties as property>
+<#if (property["many-to-one"]!"false") == "true">
+, ${property.name?cap_first}Resource
+</#if>
+</#list>
+) {
 	$scope.disabled = false;
+	
+	<#list properties as property>
+	<#if (property["many-to-one"]!"false") == "true">
+	${property.name?cap_first}Resource.queryAll(function(data){
+        $scope.${property.name}List = angular.fromJson(JSON.stringify(data));
+    });
+    </#if>
+    </#list>
 
 	$scope.save = function() {
 		${entityName}Resource.save($scope.${entityName?lower_case}, function(${entityName?lower_case},responseHeaders){
@@ -87,7 +135,7 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
 		$location.path("/${entityName}s");
 	};
 
-	$scope.delete = function() {
+	$scope.remove = function() {
 		$scope.${entityName?lower_case}.$remove(function() {
 			$location.path("/${entityName}s");
 		});
@@ -95,4 +143,3 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
 	
 	$scope.get();
 };
-</#list>
