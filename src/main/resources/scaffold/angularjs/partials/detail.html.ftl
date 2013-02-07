@@ -9,7 +9,7 @@
                 <option value="">Choose a ${property.name?cap_first}</option>
             </select>
             <#else>
-            <input id="${property.name}" name="${property.name}" <#if property.type == "number">type="number"<#elseif (property["datetime-type"]!"") == "date">type="date"<#elseif (property["datetime-type"]!"") == "time">type="time"<#elseif (property["datetime-type"]!"") == "both">type="datetime"<#else>type="text"</#if> <#if property.required!"false" == "true">required</#if> ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
+            <input id="${property.name}" name="${property.name}" <#if property.type == "number">type="number" <#if property["minimum-value"]??> min="${property["minimum-value"]}" </#if><#if property["maximum-value"]??> max="${property["maximum-value"]}" </#if></#if> <#if (property["datetime-type"]!"") == "date">type="date"<#elseif (property["datetime-type"]!"") == "time">type="time"<#elseif (property["datetime-type"]!"") == "both">type="datetime"<#else>type="text"</#if> <#if property.required!"false" == "true">required</#if> <#if property["maximum-length"]??> maxlength="${property["maximum-length"]}"</#if> ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
             </#if>
         </div>
         </#if>

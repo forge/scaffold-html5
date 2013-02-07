@@ -37,6 +37,7 @@ import org.jboss.forge.shell.plugins.RequiresFacet;
 import org.jboss.forge.spec.javaee.CDIFacet;
 import org.jboss.forge.spec.javaee.EJBFacet;
 import org.jboss.forge.spec.javaee.PersistenceFacet;
+import org.metawidget.inspector.beanvalidation.BeanValidationInspector;
 import org.metawidget.inspector.composite.CompositeInspector;
 import org.metawidget.inspector.composite.CompositeInspectorConfig;
 import org.metawidget.inspector.impl.BaseObjectInspectorConfig;
@@ -198,8 +199,10 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         jpaInspectorConfig.setPropertyStyle(new ForgePropertyStyle(forgePropertyStyleConfig));
         JpaInspector jpaInspector = new JpaInspector(jpaInspectorConfig);
         
+        BeanValidationInspector beanValidationInspector = new BeanValidationInspector(baseObjectInspectorConfig);
+        
         CompositeInspectorConfig compositeInspectorConfig = new CompositeInspectorConfig();
-        compositeInspectorConfig.setInspectors(propertyTypeInspector,forgeInspector,jpaInspector);
+        compositeInspectorConfig.setInspectors(propertyTypeInspector,forgeInspector,jpaInspector,beanValidationInspector);
         CompositeInspector compositeInspector = new CompositeInspector(compositeInspectorConfig);
         
         Element inspectionResult = compositeInspector.inspectAsDom(null, entity.getQualifiedName(), null);
