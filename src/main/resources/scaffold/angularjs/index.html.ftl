@@ -7,16 +7,6 @@
     <link href="styles/bootstrap.css" rel="stylesheet" media="screen">
     <link href="styles/main.css" rel="stylesheet" media="screen">
     <link href="styles/bootstrap-responsive.css" rel="stylesheet" media="screen">
-	<script src="scripts/vendor/angular.js"></script>
-	<script src="scripts/vendor/angular-resource.js"></script>
-	<script src="scripts/app.js"></script>
-	<#list entityNames as entityName>
-    <script src="${entityName}Controllers.js"></script>
-    </#list>
-	<script src="scripts/filters.js"></script>
-    <#list entityNames as entityName>
-    <script src="scripts/${entityName}/${entityName}.js"></script>
-    </#list>
 </head>
 <body>
 	<div class="navbar navbar-inverse navbar-fixed-top">
@@ -44,5 +34,15 @@
             </div>
         </div>
     </div>
+    <script src="scripts/vendor/angular.js"></script>
+    <script src="scripts/vendor/angular-resource.js"></script>
+    <script src="scripts/app.js"></script>
+    <#list entityNames as entityName>
+    <script src="${entityName}Controllers.js"></script>
+    </#list>
+    <script src="scripts/filters.js"></script>
+    <#list entityNames as entityName>
+    <script src="scripts/${entityName}/${entityName}.js"></script>
+    </#list>
 </body>
 </html>
