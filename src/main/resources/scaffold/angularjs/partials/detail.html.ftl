@@ -8,7 +8,7 @@
             <select id="${property.name}" name="${property.name}" ng-model="${entityName?lower_case}.${property.name}" ng-options="${property.name?substring(0, 1)} as ${property.name?substring(0, 1)}.id for ${property.name?substring(0, 1)} in ${property.name}List" <#if property.required!"false" == "true">required</#if> >
                 <option value="">Choose a ${property.name?cap_first}</option>
             </select>
-                <#if property.required!"false" == "true">
+                <#if (property.required!"false") == "true">
                 <span class="help-inline" ng-show="new${entityName}.${property.name}.$error.required">required</span> 
                 </#if>
             <#elseif (property["n-to-many"]!"false") == "true">
@@ -20,8 +20,8 @@
             </div>
             <button ng-click="add${property.name}( ${entityName?lower_case}.${property.name} )">Add a ${property.name?cap_first}</button>
             <#else>
-            <input id="${property.name}" name="${property.name}" <#if property.type == "number">type="number" <#if property["minimum-value"]??> min="${property["minimum-value"]}" </#if><#if property["maximum-value"]??> max="${property["maximum-value"]}" </#if></#if> <#if (property["datetime-type"]!"") == "date">type="date"<#elseif (property["datetime-type"]!"") == "time">type="time"<#elseif (property["datetime-type"]!"") == "both">type="datetime"<#else>type="text"</#if> <#if property.required!"false" == "true">required</#if> <#if property["maximum-length"]??> maxlength="${property["maximum-length"]}"</#if> ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
-                <#if property.required!"false" == "true">
+            <input id="${property.name}" name="${property.name}" <#if property.type == "number">type="number" <#if property["minimum-value"]??> min="${property["minimum-value"]}" </#if><#if property["maximum-value"]??> max="${property["maximum-value"]}" </#if></#if> <#if (property["datetime-type"]!"") == "date">type="date"<#elseif (property["datetime-type"]!"") == "time">type="time"<#elseif (property["datetime-type"]!"") == "both">type="datetime"<#else>type="text"</#if> <#if (property.required!"false") == "true">required</#if> <#if property["maximum-length"]??> maxlength="${property["maximum-length"]}"</#if> ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
+                <#if (property.required!"false") == "true">
                 <span class="help-inline" ng-show="new${entityName}.${property.name}.$error.required">required</span> 
                 </#if>
                 <#if property.type == "number">
