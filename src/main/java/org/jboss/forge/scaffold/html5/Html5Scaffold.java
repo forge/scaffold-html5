@@ -236,6 +236,11 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
                 String oneToOneType = propertyAttributes.get("type");
                 propertyAttributes.put("simpleType", getSimpleName(oneToOneType));
             }
+            String oneToManyRel = propertyAttributes.get("n-to-many");
+            if("true".equals(oneToManyRel)){
+                String oneToManyType = propertyAttributes.get("parameterized-type");
+                propertyAttributes.put("simpleType", getSimpleName(oneToManyType));
+            }
             
             // Add the property attributes into a list, made accessible as a sequence to the FTL
             viewPropertyAttributes.add(propertyAttributes);

@@ -80,7 +80,7 @@ function Search${entityName}Controller($scope,$filter,$http,${entityName}Resourc
 
 function New${entityName}Controller($scope,$location,${entityName}Resource
 <#list properties as property>
-<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
+<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true" || (property["n-to-many"]!"false") == "true">
 , ${property.simpleType}Resource
 </#if>
 </#list>
@@ -92,6 +92,26 @@ function New${entityName}Controller($scope,$location,${entityName}Resource
 	${property.simpleType}Resource.queryAll(function(data){
         $scope.${property.name}List = angular.fromJson(JSON.stringify(data));
     });
+    </#if>
+    </#list>
+    
+    <#list properties as property>
+    <#if (property["n-to-many"]!"false") == "true">
+    ${property.simpleType}Resource.queryAll(function(data){
+        $scope.${property.name}List = angular.fromJson(JSON.stringify(data));
+    });
+    
+    $scope.remove${property.name} = function(${property.name} , ${property.name}Element) {
+        console.log("Removing {0} from {1}", ${property.name}Element, ${property.name} );
+    };
+    
+    $scope.add${property.name} = function(${property.name}Element) {
+        if(!$scope.${entityName?lower_case}.${property.name}) {
+            $scope.${entityName?lower_case}.${property.name} = [];
+        }
+        $scope.${entityName?lower_case}.${property.name}.push(new ${property.simpleType}Resource());
+        console.log("Adding {0} to {1}", ${property.name}Element, $scope.${entityName?lower_case}.${property.name} );
+    };
     </#if>
     </#list>
 
@@ -112,7 +132,7 @@ function New${entityName}Controller($scope,$location,${entityName}Resource
 
 function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}Resource
 <#list properties as property>
-<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
+<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true" || (property["n-to-many"]!"false") == "true">
 , ${property.simpleType}Resource
 </#if>
 </#list>
@@ -133,6 +153,18 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
                         $scope.${entityName?lower_case}.${property.name} = datum;
                         self.original.${property.name} = datum;
                     }
+                });
+            });
+            <#elseif (property["n-to-many"]!"false") == "true">
+            ${property.simpleType}Resource.queryAll(function(data) {
+                $scope.${property.name}List = data;
+                angular.forEach($scope.${property.name}List, function(datum){
+                    angular.forEach($scope.${entityName?lower_case}.${property.name}, function(nestedDatum,index){
+                        if(angular.equals(datum,nestedDatum)) {
+                            $scope.${entityName?lower_case}.${property.name}[index] = datum;
+                            self.original.${property.name}[index] = datum;
+                        }
+                    });
                 });
             });
             </#if>
@@ -159,6 +191,22 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
 			$location.path("/${entityName}s");
 		});
 	};
+	
+    <#list properties as property>
+    <#if (property["n-to-many"]!"false") == "true">
+    $scope.remove${property.name} = function(${property.name} , ${property.name}Element) {
+        console.log("Removing {0} from {1}", ${property.name}Element, ${property.name} );
+    };
+    
+    $scope.add${property.name} = function(${property.name}Element) {
+        if(!$scope.${entityName?lower_case}.${property.name}) {
+            $scope.${entityName?lower_case}.${property.name} = [];
+        }
+        $scope.${entityName?lower_case}.${property.name}.push(new ${property.simpleType}Resource());
+        console.log("Adding {0} to {1}", ${property.name}Element, $scope.${entityName?lower_case}.${property.name} ); 
+    };
+    </#if>
+    </#list>
 	
 	$scope.get();
 };

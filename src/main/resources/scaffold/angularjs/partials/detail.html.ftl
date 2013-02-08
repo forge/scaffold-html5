@@ -8,6 +8,14 @@
             <select id="${property.name}" name="${property.name}" ng-model="${entityName?lower_case}.${property.name}" ng-options="${property.name?substring(0, 1)} as ${property.name?substring(0, 1)}.id for ${property.name?substring(0, 1)} in ${property.name}List">
                 <option value="">Choose a ${property.name?cap_first}</option>
             </select>
+            <#elseif (property["n-to-many"]!"false") == "true">
+            <div ng-repeat="${property.name}Element in ${entityName?lower_case}.${property.name}">
+                <select id="${property.name}{{$index}}" name="${property.name}{{$index}}" ng-model="${entityName?lower_case}.${property.name}[$index]" ng-options="${property.name?substring(0, 1)} as ${property.name?substring(0, 1)}.id for ${property.name?substring(0, 1)} in ${property.name}List">
+                    <option value="">Choose a ${property.name?cap_first}</option>
+                </select> 
+                <button ng-click="remove${property.name}(${entityName?lower_case}.${property.name} , ${property.name}Element)">Delete</button>
+            </div>
+            <button ng-click="add${property.name}( ${entityName?lower_case}.${property.name} )">Add a ${property.name?cap_first}</button>
             <#else>
             <input id="${property.name}" name="${property.name}" <#if property.type == "number">type="number" <#if property["minimum-value"]??> min="${property["minimum-value"]}" </#if><#if property["maximum-value"]??> max="${property["maximum-value"]}" </#if></#if> <#if (property["datetime-type"]!"") == "date">type="date"<#elseif (property["datetime-type"]!"") == "time">type="time"<#elseif (property["datetime-type"]!"") == "both">type="datetime"<#else>type="text"</#if> <#if property.required!"false" == "true">required</#if> <#if property["maximum-length"]??> maxlength="${property["maximum-length"]}"</#if> ng-model="${entityName?lower_case}.${property.name}" placeholder="Enter the ${entityName} ${property.name}"></input>
             </#if>
