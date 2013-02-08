@@ -2,7 +2,8 @@
 <form id="${entityName}Search" class="form-horizontal">
     <#list properties as property>
     <div class="control-group">
-        <#if (property.hidden!"false") != "true">
+        <#-- Display only non-hidden singular properties as search criteria. Omit collections -->
+        <#if (property.hidden!"false") != "true" && (property["n-to-many"]!"false") != "true">
         <label for="${property.name}" class="control-label">${property.name?cap_first}</label>
         <div class="controls">
             <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
@@ -29,7 +30,10 @@
             <tr>
             <#list properties as property>
             <#if (property.hidden!"false") != "true">
+                <#if (property["n-to-many"]!"false") != "true">
+                <#-- Display only singular properties for now. Exclude collections as they cannot be displayed "meaningfully". -->
                 <th>${property.name?cap_first}</th>
+                </#if>
             </#if>
             </#list>
             </tr>
@@ -40,6 +44,8 @@
             <#if (property.hidden!"false") != "true">
                 <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
                 <td><a href="#/${entityName}s/edit/{{result.id}}">{{result.${property.name}.id}}</a></td>
+                <#elseif (property["n-to-many"]!"false") == "true">
+                <#-- Do nothing. We won't allow for display of collection properties in search results for now. -->
                 <#else>
                 <td><a href="#/${entityName}s/edit/{{result.id}}">{{result.${property.name}}}</a></td>
                 </#if>
