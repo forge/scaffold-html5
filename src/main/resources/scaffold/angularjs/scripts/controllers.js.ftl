@@ -122,6 +122,10 @@ function New${entityName}Controller($scope,$location,${entityName}Resource
 			var fragments = locationHeader.split('/');
 			var id = fragments[fragments.length -1];
 			$location.path('/${entityName}s/edit/' + id);
+		}, function() {
+		    // TODO: Fix this through a HTTP interceptor that updates the view.
+		    // We won't update the view here since controllers do not update views.
+		    alert("Oops! Something broke. Retry, or cancel and start afresh.");
 		});
 	};
 	
@@ -169,6 +173,8 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
             });
             </#if>
             </#list>
+        }, function() {
+            $location.path("/${entityName}s");
         });
 	};
 
