@@ -106,12 +106,11 @@ function New${entityName}Controller($scope,$location,${entityName}Resource
         ${property.name}.splice(index, 1);
     };
     
-    $scope.add${property.name} = function(${property.name}Element) {
+    $scope.add${property.name} = function() {
         if(!$scope.${entityName?lower_case}.${property.name}) {
             $scope.${entityName?lower_case}.${property.name} = [];
         }
         $scope.${entityName?lower_case}.${property.name}.push(new ${property.simpleType}Resource());
-        console.log("Adding {0} to {1}", ${property.name}Element, $scope.${entityName?lower_case}.${property.name} );
     };
     </#if>
     </#list>
