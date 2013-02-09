@@ -101,8 +101,9 @@ function New${entityName}Controller($scope,$location,${entityName}Resource
         $scope.${property.name}List = angular.fromJson(JSON.stringify(data));
     });
     
-    $scope.remove${property.name} = function(${property.name} , ${property.name}Element) {
-        console.log("Removing {0} from {1}", ${property.name}Element, ${property.name} );
+    $scope.remove${property.name} = function(${property.name} , index) {
+        console.log("Removing element at {0} from {1}", index, ${property.name} );
+        ${property.name}.splice(index, 1);
     };
     
     $scope.add${property.name} = function(${property.name}Element) {
@@ -202,8 +203,9 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
 	
     <#list properties as property>
     <#if (property["n-to-many"]!"false") == "true">
-    $scope.remove${property.name} = function(${property.name} , ${property.name}Element) {
-        console.log("Removing {0} from {1}", ${property.name}Element, ${property.name} );
+    $scope.remove${property.name} = function(${property.name} , index) {
+        console.log("Removing element at {0} from {1}", index, ${property.name} );
+        ${property.name}.splice(index, 1);
     };
     
     $scope.add${property.name} = function(${property.name}Element) {

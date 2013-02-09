@@ -19,7 +19,7 @@
                 <select id="${property.name}{{$index}}" name="${property.name}{{$index}}" ng-model="${entityName?lower_case}.${property.name}[$index]" ng-options="${property.name?substring(0, 1)} as ${property.name?substring(0, 1)}.id for ${property.name?substring(0, 1)} in ${property.name}List">
                     <option value="">Choose a ${property.name?cap_first}</option>
                 </select> 
-                <button ng-click="remove${property.name}(${entityName?lower_case}.${property.name} , ${property.name}Element)">Delete</button>
+                <button ng-click="remove${property.name}(${entityName?lower_case}.${property.name} , $index)">Delete</button>
             </div>
             <button ng-click="add${property.name}( ${entityName?lower_case}.${property.name} )">Add a ${property.name?cap_first}</button>
             <#else>
