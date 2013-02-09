@@ -122,10 +122,9 @@ function New${entityName}Controller($scope,$location,${entityName}Resource
 			var fragments = locationHeader.split('/');
 			var id = fragments[fragments.length -1];
 			$location.path('/${entityName}s/edit/' + id);
+			$scope.displayError = false;
 		}, function() {
-		    // TODO: Fix this through a HTTP interceptor that updates the view.
-		    // We won't update the view here since controllers do not update views.
-		    alert("Oops! Something broke. Retry, or cancel and start afresh.");
+		    $scope.displayError = true;
 		});
 	};
 	
@@ -185,6 +184,9 @@ function Edit${entityName}Controller($scope,$routeParams,$location,${entityName}
 	$scope.save = function() {
 		$scope.${entityName?lower_case}.$update(function(){
             $scope.get();
+            $scope.displayError = false;
+		}, function() {
+            $scope.displayError=true;
 		});
 	};
 

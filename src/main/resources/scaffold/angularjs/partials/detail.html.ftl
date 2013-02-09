@@ -1,4 +1,7 @@
 <form id="new-${entityName}" name="new${entityName}" class="form-horizontal">
+    <div ng-show="displayError" class="alert alert-error">
+        <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
+    </div>
     <#list properties as property>
     <div class="control-group" ng-class="{error: new${entityName}.${property.name}.$invalid}">
         <#if (property.hidden!"false") == "false">
