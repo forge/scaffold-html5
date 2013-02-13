@@ -20,10 +20,10 @@
         <div class="row-fluid">
             <div class="span3">
                 <img src="images/forge-logo.png" alt="JBoss Forge"></img>
-                <nav class="well sidebar-nav">
+                <nav class="well sidebar-nav" ng-controller="NavController">
                     <ul id="sidebar-entries" class="nav nav-list">
                         <#list entityNames as entityName>
-                    	<li><a href="#/${entityName}s">${entityName}s</a></li>
+                    	<li ng-class="{active: matchesRoute('${entityName}s')}"><a href="#/${entityName}s">${entityName}s</a></li>
                     	</#list>
                     </ul>
                 </nav>
@@ -37,9 +37,6 @@
     <script src="scripts/vendor/angular.js"></script>
     <script src="scripts/vendor/angular-resource.js"></script>
     <script src="scripts/app.js"></script>
-    <#list entityNames as entityName>
-    <script src="${entityName}Controllers.js"></script>
-    </#list>
     <script src="scripts/filters.js"></script>
     <#list entityNames as entityName>
     <script src="scripts/${entityName}/${entityName}.js"></script>

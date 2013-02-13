@@ -8,11 +8,16 @@ var ${project.projectName} = angular.module('${project.projectName}', ['${projec
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
       <#list entityNames as entityName>
-      .when('/${entityName}s',{templateUrl:'partials/${entityName}/search.html',controller:Search${entityName}Controller})
-      .when('/${entityName}s/new',{templateUrl:'partials/${entityName}/detail.html',controller:New${entityName}Controller})
-      .when('/${entityName}s/edit/:${entityName}Id',{templateUrl:'partials/${entityName}/detail.html',controller:Edit${entityName}Controller})
+      .when('/${entityName}s',{templateUrl:'partials/${entityName}/search.html',controller:'Search${entityName}Controller'})
+      .when('/${entityName}s/new',{templateUrl:'partials/${entityName}/detail.html',controller:'New${entityName}Controller'})
+      .when('/${entityName}s/edit/:${entityName}Id',{templateUrl:'partials/${entityName}/detail.html',controller:'Edit${entityName}Controller'})
       </#list>
       .otherwise({
         redirectTo: '/'
       });
-  }]);
+  }])
+  .controller('NavController', function NavController($scope, $location) {
+    $scope.matchesRoute = function(route) {
+        return ($location.path().indexOf(route) != -1);
+    }
+  });
