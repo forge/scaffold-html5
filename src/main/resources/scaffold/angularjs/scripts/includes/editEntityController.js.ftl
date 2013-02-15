@@ -4,14 +4,18 @@
     angularResource = "${entityName}Resource"
     entityId = "${entityName}Id"
     model = "$scope.${entityName?lower_case}"
+    entityRouter = "/${entityName}s"
 >
-${angularModule}.controller('${angularController}', function($scope,$routeParams,$location,${angularResource}
+
+<#assign relatedResources>
 <#list properties as property>
-<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true" || (property["n-to-many"]!"false") == "true">
-, ${property.simpleType}Resource
+<#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true" || (property["n-to-many"]!) == "true">
+, ${property.simpleType}Resource<#t>
 </#if>
 </#list>
-) {
+</#assign>
+
+${angularModule}.controller('${angularController}', function($scope, $routeParams, $location, ${angularResource} ${relatedResources}) {
     var self = this;
     $scope.disabled = false;
 
@@ -20,24 +24,29 @@ ${angularModule}.controller('${angularController}', function($scope,$routeParams
             self.original = data;
             ${model} = new ${angularResource}(self.original);
             <#list properties as property>
-            <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
-            ${property.simpleType}Resource.queryAll(function(data) {
-                $scope.${property.name}List = data;
-                angular.forEach($scope.${property.name}List, function(datum){
-                    if(angular.equals(datum,${model}.${property.name})) {
-                        ${model}.${property.name} = datum;
-                        self.original.${property.name} = datum;
+            <#assign
+                relatedResource = "${property.simpleType!}Resource"
+                relatedCollection = "$scope.${property.name}List"
+                modelProperty = "${model}.${property.name}"
+                originalProperty = "self.original.${property.name}">
+            <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
+            ${relatedResource}.queryAll(function(data) {
+                ${relatedCollection} = data;
+                angular.forEach(${relatedCollection}, function(datum){
+                    if(angular.equals(datum, ${modelProperty})) {
+                        ${modelProperty} = datum;
+                        ${originalProperty} = datum;
                     }
                 });
             });
-            <#elseif (property["n-to-many"]!"false") == "true">
-            ${property.simpleType}Resource.queryAll(function(data) {
-                $scope.${property.name}List = data;
-                angular.forEach($scope.${property.name}List, function(datum){
-                    angular.forEach(${model}.${property.name}, function(nestedDatum,index){
+            <#elseif (property["n-to-many"]!) == "true">
+            ${relatedResource}.queryAll(function(data) {
+                ${relatedCollection} = data;
+                angular.forEach(${relatedCollection}, function(datum){
+                    angular.forEach(${modelProperty}, function(nestedDatum,index){
                         if(angular.equals(datum,nestedDatum)) {
-                            ${model}.${property.name}[index] = datum;
-                            self.original.${property.name}[index] = datum;
+                            ${modelProperty}[index] = datum;
+                            ${originalProperty}[index] = datum;
                         }
                     });
                 });
@@ -45,7 +54,7 @@ ${angularModule}.controller('${angularController}', function($scope,$routeParams
             </#if>
             </#list>
         }, function() {
-            $location.path("/${entityName}s");
+            $location.path("${entityRoute}");
         });
     };
 
@@ -63,28 +72,28 @@ ${angularModule}.controller('${angularController}', function($scope,$routeParams
     };
 
     $scope.cancel = function() {
-        $location.path("/${entityName}s");
+        $location.path("${entityRoute}");
     };
 
     $scope.remove = function() {
         ${model}.$remove(function() {
-            $location.path("/${entityName}s");
+            $location.path("${entityRoute}");
         });
     };
     
     <#list properties as property>
     <#if (property["n-to-many"]!"false") == "true">
-    $scope.remove${property.name} = function(${property.name} , index) {
-        console.log("Removing element at {0} from {1}", index, ${property.name} );
-        ${property.name}.splice(index, 1);
+    <#assign
+            modelProperty = "${model}.${property.name}"
+            removeExistingItemFunction = "$scope.remove${property.name}"
+            addNewItemFunction = "$scope.add${property.name}">
+    ${removeExistingItemFunction} = function(index) {
+        ${modelProperty}.splice(index, 1);
     };
     
-    $scope.add${property.name} = function(${property.name}Element) {
-        if(!${model}.${property.name}) {
-            ${model}.${property.name} = [];
-        }
-        ${model}.${property.name}.push(new ${property.simpleType}Resource());
-        console.log("Adding {0} to {1}", ${property.name}Element, ${model}.${property.name} ); 
+    ${addNewItemFunction} = function() {
+        ${modelProperty} = ${modelProperty} || [];
+        ${modelProperty}.push(new ${relatedResource}());
     };
     </#if>
     </#list>

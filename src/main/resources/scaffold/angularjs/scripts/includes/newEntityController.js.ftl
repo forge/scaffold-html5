@@ -6,45 +6,54 @@
     model = "$scope.${entityName?lower_case}"
     entityRoute = "/${entityName}s"
 >
-${angularModule}.controller('${angularController}', function ($scope,$location,${angularResource}
+
+<#assign relatedResources>
 <#list properties as property>
-<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true" || (property["n-to-many"]!"false") == "true">
-, ${property.simpleType}Resource
+<#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true" || (property["n-to-many"]!) == "true">
+, ${property.simpleType}Resource<#t>
 </#if>
 </#list>
-) {
+</#assign>
+
+${angularModule}.controller('${angularController}', function ($scope, $location, ${angularResource} ${relatedResources}) {
     $scope.disabled = false;
     
     <#list properties as property>
-    <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
-    ${property.simpleType}Resource.queryAll(function(data){
-        $scope.${property.name}List = angular.fromJson(JSON.stringify(data));
+    <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
+    <#assign
+        relatedResource="${property.simpleType}Resource"
+        modelCollection="$scope.${property.name}List">
+    ${relatedResource}.queryAll(function(data){
+        ${modelCollection} = angular.fromJson(JSON.stringify(data));
     });
     </#if>
     </#list>
     
     <#list properties as property>
-    <#if (property["n-to-many"]!"false") == "true">
-    ${property.simpleType}Resource.queryAll(function(data){
-        $scope.${property.name}List = angular.fromJson(JSON.stringify(data));
+    <#if (property["n-to-many"]!) == "true">
+    <#assign
+        relatedResource = "${property.simpleType}Resource"
+        relatedCollection = "$scope.${property.name}List"
+        modelProperty = "${model}.${property.name}"
+        removeExistingItemFunction = "$scope.remove${property.name}"
+        addNewItemFunction = "$scope.add${property.name}">
+    ${relatedResource}.queryAll(function(data){
+        ${relatedCollection} = angular.fromJson(JSON.stringify(data));
     });
     
-    $scope.remove${property.name} = function(${property.name} , index) {
-        console.log("Removing element at {0} from {1}", index, ${property.name} );
-        ${property.name}.splice(index, 1);
+    ${removeExistingItemFunction} = function(index) {
+        ${modelProperty}.splice(index, 1);
     };
     
-    $scope.add${property.name} = function() {
-        if(!${model}.${property.name}) {
-            ${model}.${property.name} = [];
-        }
-        ${model}.${property.name}.push(new ${property.simpleType}Resource());
+    ${addNewItemFunction} = function() {
+        ${modelProperty} = ${modelProperty} || [];
+        ${modelProperty}.push(new ${relatedResource}());
     };
     </#if>
     </#list>
 
     $scope.save = function() {
-        ${angularResource}.save(${model}, function(${entityName?lower_case},responseHeaders){
+        ${angularResource}.save(${model}, function(data,responseHeaders){
             // Get the Location header and parse it.
             var locationHeader = responseHeaders('Location');
             var fragments = locationHeader.split('/');

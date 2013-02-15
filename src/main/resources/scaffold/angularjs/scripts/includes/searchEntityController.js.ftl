@@ -6,13 +6,16 @@
     model = "$scope.${entityName?lower_case}" 
     entityRoute = "/${entityName}s" 
 >
-${angularModule}.controller('${angularController}', function($scope,$filter,$http,${angularResource}
+
+<#assign relatedResources>
 <#list properties as property>
-<#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
-,${property.simpleType}Resource
+<#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true" || (property["n-to-many"]!) == "true">
+, ${property.simpleType}Resource<#t>
 </#if>
 </#list>
-) {
+</#assign>
+
+${angularModule}.controller('${angularController}', function($scope, $filter, $http, ${angularResource} ${relatedResources}) {
     $scope.filter = $filter;
     $scope.search={};
     $scope.currentPage = 0;
@@ -24,8 +27,11 @@ ${angularModule}.controller('${angularController}', function($scope,$filter,$htt
         return (result == 0) ? 1 : result;
     };
     <#list properties as property>
-    <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
-    $scope.${property.name}List = ${property.simpleType}Resource.queryAll();
+    <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true">
+    <#assign
+        relatedCollection = "$scope.${property.name}List"
+        relatedResource = "${property.simpleType}Resource">
+    ${relatedCollection} = ${relatedResource}.queryAll();
     </#if>
     </#list>
 
