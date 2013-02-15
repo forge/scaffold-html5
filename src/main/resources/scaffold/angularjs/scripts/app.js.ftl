@@ -1,6 +1,7 @@
+<#assign angularApp = "${project.projectName}">
 'use strict';
 
-var ${project.projectName} = angular.module('${project.projectName}', ['${project.projectName}.filters'
+var ${angularApp} = angular.module('${angularApp}', ['${angularApp}.filters'
 <#list entityNames as entityName>
 ,'${entityName}'
 </#list>
@@ -8,9 +9,16 @@ var ${project.projectName} = angular.module('${project.projectName}', ['${projec
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
       <#list entityNames as entityName>
-      .when('/${entityName}s',{templateUrl:'partials/${entityName}/search.html',controller:'Search${entityName}Controller'})
-      .when('/${entityName}s/new',{templateUrl:'partials/${entityName}/detail.html',controller:'New${entityName}Controller'})
-      .when('/${entityName}s/edit/:${entityName}Id',{templateUrl:'partials/${entityName}/detail.html',controller:'Edit${entityName}Controller'})
+      <#assign
+                searchEntityController = "Search${entityName}Controller"
+                newEntityController = "New${entityName}Controller"
+                editEntityController = "Edit${entityName}Controller"
+                entityId = "${entityName}Id"
+                entityRoute = "/${entityName}s"
+                entityPartialsLocation = "partials/${entityName}">
+      .when('${entityRoute}',{templateUrl:'${entityPartialsLocation}/search.html',controller:'${searchEntityController}'})
+      .when('${entityRoute}/new',{templateUrl:'${entityPartialsLocation}/detail.html',controller:'${newEntityController}'})
+      .when('${entityRoute}/edit/:${entityId}',{templateUrl:'${entityPartialsLocation}/detail.html',controller:'${editEntityController}'})
       </#list>
       .otherwise({
         redirectTo: '/'

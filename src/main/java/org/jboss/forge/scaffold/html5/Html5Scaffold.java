@@ -1,11 +1,5 @@
 package org.jboss.forge.scaffold.html5;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,22 +7,16 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.jboss.forge.parser.java.Field;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
-import org.jboss.forge.project.facets.JavaSourceFacet;
 import org.jboss.forge.project.facets.MetadataFacet;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.resources.FileResource;
 import org.jboss.forge.resources.Resource;
-import org.jboss.forge.resources.java.JavaResource;
 import org.jboss.forge.scaffold.AccessStrategy;
 import org.jboss.forge.scaffold.ScaffoldProvider;
 import org.jboss.forge.scaffold.TemplateStrategy;
-import org.jboss.forge.scaffold.html5.metawidget.inspector.ForgeInspector;
-import org.jboss.forge.scaffold.html5.metawidget.inspector.propertystyle.ForgePropertyStyle;
-import org.jboss.forge.scaffold.html5.metawidget.inspector.propertystyle.ForgePropertyStyleConfig;
 import org.jboss.forge.scaffold.util.ScaffoldUtil;
 import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.Alias;
@@ -37,20 +25,6 @@ import org.jboss.forge.shell.plugins.RequiresFacet;
 import org.jboss.forge.spec.javaee.CDIFacet;
 import org.jboss.forge.spec.javaee.EJBFacet;
 import org.jboss.forge.spec.javaee.PersistenceFacet;
-import org.metawidget.inspector.beanvalidation.BeanValidationInspector;
-import org.metawidget.inspector.composite.CompositeInspector;
-import org.metawidget.inspector.composite.CompositeInspectorConfig;
-import org.metawidget.inspector.impl.BaseObjectInspectorConfig;
-import org.metawidget.inspector.jpa.JpaInspector;
-import org.metawidget.inspector.jpa.JpaInspectorConfig;
-import org.metawidget.inspector.propertytype.PropertyTypeInspector;
-import org.metawidget.util.XmlUtils;
-import org.w3c.dom.Element;
-
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 /**
  *
@@ -112,10 +86,6 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
 
     @Override
     public List<Resource<?>> generateIndex(String targetDir, Resource<?> template, boolean overwrite) {
-        Configuration config = new Configuration();
-        config.setClassForTemplateLoading(getClass(), "/scaffold/angularjs");
-        config.setObjectWrapper(new DefaultObjectWrapper());
-
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         List<String> entityNames = new ArrayList<String>();
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
@@ -132,8 +102,10 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         projectGlobalTemplates.put("index.html.ftl", "index.html");
         projectGlobalTemplates.put("scripts/app.js.ftl", "scripts/app.js");
         projectGlobalTemplates.put("scripts/filters.js.ftl", "scripts/filters.js");
+        
+        FreemarkerClient freemarkerClient = new FreemarkerClient();
         for (String projectGlobalTemplate : projectGlobalTemplates.keySet()) {
-            String output = processFTL(config, root, projectGlobalTemplate);
+            String output = freemarkerClient.processFTL(root, projectGlobalTemplate);
             String outputPath = projectGlobalTemplates.get(projectGlobalTemplate);
             result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(outputPath), output, overwrite));
         }
@@ -143,10 +115,6 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
     @Override
     public List<Resource<?>> generateFromEntity(String targetDir, Resource<?> template, JavaClass entity, boolean overwrite) {
         System.out.println("Generating artifacts from Entity:" + entity.getQualifiedName());
-        Configuration config = new Configuration();
-        config.setClassForTemplateLoading(getClass(), "/scaffold/angularjs");
-        config.setObjectWrapper(new DefaultObjectWrapper());
-
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         
@@ -154,33 +122,21 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
 
         // TODO: The list of template files to be processed per-entity (like detail.html.ftl and search.html.ftl) needs to
         // be obtained dynamically. Another list to be processed for all entities (like index.html.ftl) also needs to be
-        // maintained. In short, a template should be associated with a processing directive like PER_ENTITY, ALL_ENTITIES etc.
+        // maintained. In short, a template should be associated with a processing directive like PER_ENTITY, PER_PROJECT etc.
         Map<String, String> perEntityTemplates = new HashMap<String, String>();
         perEntityTemplates.put("partials/detail.html.ftl", "/partials/" + entity.getName() + "/detail.html");
         perEntityTemplates.put("partials/search.html.ftl", "/partials/" + entity.getName() + "/search.html");
         perEntityTemplates.put("scripts/entityModule.js.ftl", "/scripts/" + entity.getName() + "/" + entity.getName() + ".js");
+        
+        FreemarkerClient freemarkerClient = new FreemarkerClient();
         for (String entityTemplate : perEntityTemplates.keySet()) {
-            String output = processFTL(config, root, entityTemplate);
+            String output = freemarkerClient.processFTL(root, entityTemplate);
             String outputPath = perEntityTemplates.get(entityTemplate);
             result.add(ScaffoldUtil.createOrOverwrite(prompt, web.getWebResource(outputPath), output, overwrite));
         }
 
         generateIndex(targetDir, template, overwrite);
         return result;
-    }
-
-    protected String processFTL(Configuration config, Map<String, Object> root, String inputPath) {
-        try {
-            Template templateFile = config.getTemplate(inputPath);
-            Writer out = new StringWriter();
-            templateFile.process(root, out);
-            out.flush();
-            return out.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (TemplateException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
