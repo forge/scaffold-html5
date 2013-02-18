@@ -2,6 +2,7 @@ package org.jboss.forge.scaffold.html5;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.internal.matchers.StringContains;
 
 public class FreemarkerClientPartialsSearchResultsTest {
 
@@ -139,7 +139,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         assertThat(headers.text(), equalTo("FullName"));
         
         Elements resultRows = html.select("table > tbody > tr");
-        assertThat(resultRows.attr("ng-repeat"), StringContains.containsString("result in searchResults"));
+        assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
@@ -168,7 +168,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         assertThat(headers.text(), equalTo("Age"));
         
         Elements resultRows = html.select("table > tbody > tr");
-        assertThat(resultRows.attr("ng-repeat"), StringContains.containsString("result in searchResults"));
+        assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
@@ -198,7 +198,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         assertThat(headers.text(), equalTo("DateOfBirth"));
         
         Elements resultRows = html.select("table > tbody > tr");
-        assertThat(resultRows.attr("ng-repeat"), StringContains.containsString("result in searchResults"));
+        assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
@@ -230,7 +230,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         assertThat(headers.text(), equalTo("Voucher"));
         
         Elements resultRows = html.select("table > tbody > tr");
-        assertThat(resultRows.attr("ng-repeat"), StringContains.containsString("result in searchResults"));
+        assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
@@ -262,7 +262,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         assertThat(headers.text(), equalTo("Customer"));
         
         Elements resultRows = html.select("table > tbody > tr");
-        assertThat(resultRows.attr("ng-repeat"), StringContains.containsString("result in searchResults"));
+        assertThat(resultRows.attr("ng-repeat"), containsString("result in searchResults"));
         
         Elements resultCells = resultRows.select(" > td");
         assertThat(resultCells.size(), equalTo(1));
