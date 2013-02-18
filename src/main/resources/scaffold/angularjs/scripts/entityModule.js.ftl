@@ -1,6 +1,6 @@
 'use strict';
 
-var ${entityName?lower_case}Module = angular.module('${entityName}',['ngResource']);
+var ${entityName?uncap_first}Module = angular.module('${entityName}',['ngResource']);
     
 <#include "includes/entityFactory.js.ftl">
 

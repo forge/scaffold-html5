@@ -1,4 +1,4 @@
-<#assign angularApp = "${project.projectName}">
+<#assign angularApp = "${projectId}">
 'use strict';
 
 var ${angularApp} = angular.module('${angularApp}', ['${angularApp}.filters'

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en" ng-app="${project.projectName}">
+<html lang="en" ng-app="${projectId}">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>${project.projectName}</title>
+	<title>${projectTitle}</title>
     <link href="styles/bootstrap.css" rel="stylesheet" media="screen">
     <link href="styles/main.css" rel="stylesheet" media="screen">
     <link href="styles/bootstrap-responsive.css" rel="stylesheet" media="screen">
@@ -12,7 +12,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
-				<a class="brand" href="#">${project.projectName}</a>
+				<a class="brand" href="#">${projectTitle}</a>
 			</div>
 		</div>
 	</div>

@@ -25,6 +25,7 @@ import org.jboss.forge.shell.plugins.RequiresFacet;
 import org.jboss.forge.spec.javaee.CDIFacet;
 import org.jboss.forge.spec.javaee.EJBFacet;
 import org.jboss.forge.spec.javaee.PersistenceFacet;
+import org.metawidget.util.simple.StringUtils;
 
 /**
  *
@@ -96,7 +97,10 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityNames", entityNames);
         MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
-        root.put("project", metadata);
+        String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
+        String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());
+        root.put("projectId", projectIdentifier);
+        root.put("projectTitle", projectTitle);
 
         Map<String, String> projectGlobalTemplates = new HashMap<String, String>();
         projectGlobalTemplates.put("index.html.ftl", "index.html");

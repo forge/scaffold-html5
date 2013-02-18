@@ -1,5 +1,5 @@
 <#assign
-    entityModule = "${entityName?lower_case}Module"
+    entityModule = "${entityName?uncap_first}Module"
     entityResource = "${entityName}Resource"
     entityId = "${entityName}Id"
     entityResourceUrlFragment = "${entityName?lower_case}s"

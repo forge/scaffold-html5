@@ -1,9 +1,9 @@
 <#assign
-    angularModule = "${entityName?lower_case}Module"
+    angularModule = "${entityName?uncap_first}Module"
     angularController = "Edit${entityName}Controller"
     angularResource = "${entityName}Resource"
     entityId = "${entityName}Id"
-    model = "$scope.${entityName?lower_case}"
+    model = "$scope.${entityName?uncap_first}"
     entityRouter = "/${entityName}s"
 >
 
@@ -78,6 +78,9 @@ ${angularModule}.controller('${angularController}', function($scope, $routeParam
     $scope.remove = function() {
         ${model}.$remove(function() {
             $location.path("${entityRoute}");
+            $scope.displayError = false;
+        }, function() {
+            $scope.displayError=true;
         });
     };
     
