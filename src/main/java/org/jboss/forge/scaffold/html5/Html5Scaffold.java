@@ -90,7 +90,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         List<String> entityNames = new ArrayList<String>();
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
-        FileResource<?> partialsDirectory = web.getWebResource("partials");
+        FileResource<?> partialsDirectory = web.getWebResource("views");
         for (Resource<?> resource : partialsDirectory.listResources()) {
             entityNames.add(resource.getName());
         }
@@ -128,8 +128,8 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         // be obtained dynamically. Another list to be processed for all entities (like index.html.ftl) also needs to be
         // maintained. In short, a template should be associated with a processing directive like PER_ENTITY, PER_PROJECT etc.
         Map<String, String> perEntityTemplates = new HashMap<String, String>();
-        perEntityTemplates.put("partials/detail.html.ftl", "/partials/" + entity.getName() + "/detail.html");
-        perEntityTemplates.put("partials/search.html.ftl", "/partials/" + entity.getName() + "/search.html");
+        perEntityTemplates.put("views/detail.html.ftl", "/views/" + entity.getName() + "/detail.html");
+        perEntityTemplates.put("views/search.html.ftl", "/views/" + entity.getName() + "/search.html");
         perEntityTemplates.put("scripts/entityModule.js.ftl", "/scripts/" + entity.getName() + "/" + entity.getName() + ".js");
         
         FreemarkerClient freemarkerClient = new FreemarkerClient();

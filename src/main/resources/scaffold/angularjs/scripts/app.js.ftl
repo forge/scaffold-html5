@@ -15,7 +15,7 @@ var ${angularApp} = angular.module('${angularApp}', ['${angularApp}.filters'
                 editEntityController = "Edit${entityName}Controller"
                 entityId = "${entityName}Id"
                 entityRoute = "/${entityName}s"
-                entityPartialsLocation = "partials/${entityName}">
+                entityPartialsLocation = "views/${entityName}">
       .when('${entityRoute}',{templateUrl:'${entityPartialsLocation}/search.html',controller:'${searchEntityController}'})
       .when('${entityRoute}/new',{templateUrl:'${entityPartialsLocation}/detail.html',controller:'${newEntityController}'})
       .when('${entityRoute}/edit/:${entityId}',{templateUrl:'${entityPartialsLocation}/detail.html',controller:'${editEntityController}'})
