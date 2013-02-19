@@ -37,9 +37,12 @@
     <script src="scripts/vendor/angular.js"></script>
     <script src="scripts/vendor/angular-resource.js"></script>
     <script src="scripts/app.js"></script>
-    <script src="scripts/filters.js"></script>
+    <script src="scripts/filters/startFromFilter.js"></script>
     <#list entityNames as entityName>
-    <script src="scripts/${entityName}/${entityName}.js"></script>
+    <script src="scripts/services/${entityName}Factory.js"></script>
+    <script src="scripts/controllers/new${entityName}Controller.js"></script>
+    <script src="scripts/controllers/search${entityName}Controller.js"></script>
+    <script src="scripts/controllers/edit${entityName}Controller.js"></script>
     </#list>
 </body>
 </html>

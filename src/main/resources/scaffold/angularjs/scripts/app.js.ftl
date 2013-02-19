@@ -1,11 +1,7 @@
 <#assign angularApp = "${projectId}">
 'use strict';
 
-var ${angularApp} = angular.module('${angularApp}', ['${angularApp}.filters'
-<#list entityNames as entityName>
-,'${entityName}'
-</#list>
-])
+angular.module('${angularApp}',['ngResource'])
   .config(['$routeProvider', function($routeProvider) {
     $routeProvider
       <#list entityNames as entityName>

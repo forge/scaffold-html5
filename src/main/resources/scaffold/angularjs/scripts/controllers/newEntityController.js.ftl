@@ -1,5 +1,5 @@
 <#assign
-    angularModule = "${entityName?uncap_first}Module"
+    angularApp = "${projectId}"
     angularController = "New${entityName}Controller"
     angularResource = "${entityName}Resource"
     entityId = "${entityName}Id"
@@ -15,7 +15,7 @@
 </#list>
 </#assign>
 
-${angularModule}.controller('${angularController}', function ($scope, $location, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, ${angularResource} ${relatedResources}) {
     $scope.disabled = false;
     
     <#list properties as property>

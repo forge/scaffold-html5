@@ -1,10 +1,10 @@
 <#assign
-    angularModule = "${entityName?uncap_first}Module"
+    angularApp = "${projectId}"
     angularController = "Edit${entityName}Controller"
     angularResource = "${entityName}Resource"
     entityId = "${entityName}Id"
     model = "$scope.${entityName?uncap_first}"
-    entityRouter = "/${entityName}s"
+    entityRoute = "/${entityName}s"
 >
 
 <#assign relatedResources>
@@ -15,7 +15,7 @@
 </#list>
 </#assign>
 
-${angularModule}.controller('${angularController}', function($scope, $routeParams, $location, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function($scope, $routeParams, $location, ${angularResource} ${relatedResources}) {
     var self = this;
     $scope.disabled = false;
 

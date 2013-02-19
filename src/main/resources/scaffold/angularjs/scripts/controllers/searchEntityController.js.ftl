@@ -1,5 +1,5 @@
 <#assign
-    angularModule = "${entityName?uncap_first}Module" 
+    angularApp = "${projectId}" 
     angularController = "Search${entityName}Controller" 
     angularResource = "${entityName}Resource" 
     entityId = "${entityName}Id" 
@@ -15,7 +15,7 @@
 </#list>
 </#assign>
 
-${angularModule}.controller('${angularController}', function($scope, $filter, $http, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function($scope, $filter, $http, ${angularResource} ${relatedResources}) {
     $scope.filter = $filter;
     $scope.search={};
     $scope.currentPage = 0;

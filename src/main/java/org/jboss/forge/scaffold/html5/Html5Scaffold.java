@@ -105,7 +105,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         Map<String, String> projectGlobalTemplates = new HashMap<String, String>();
         projectGlobalTemplates.put("index.html.ftl", "index.html");
         projectGlobalTemplates.put("scripts/app.js.ftl", "scripts/app.js");
-        projectGlobalTemplates.put("scripts/filters.js.ftl", "scripts/filters.js");
+        projectGlobalTemplates.put("scripts/filters/startFromFilter.js.ftl", "scripts/filters/startFromFilter.js");
         
         FreemarkerClient freemarkerClient = new FreemarkerClient();
         for (String projectGlobalTemplate : projectGlobalTemplates.keySet()) {
@@ -123,6 +123,11 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         
         Map<String, Object> root = new IntrospectorClient(project).inspect(entity);
+        MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
+        String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
+        String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());
+        root.put("projectId", projectIdentifier);
+        root.put("projectTitle", projectTitle);
 
         // TODO: The list of template files to be processed per-entity (like detail.html.ftl and search.html.ftl) needs to
         // be obtained dynamically. Another list to be processed for all entities (like index.html.ftl) also needs to be
@@ -130,7 +135,10 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         Map<String, String> perEntityTemplates = new HashMap<String, String>();
         perEntityTemplates.put("views/detail.html.ftl", "/views/" + entity.getName() + "/detail.html");
         perEntityTemplates.put("views/search.html.ftl", "/views/" + entity.getName() + "/search.html");
-        perEntityTemplates.put("scripts/entityModule.js.ftl", "/scripts/" + entity.getName() + "/" + entity.getName() + ".js");
+        perEntityTemplates.put("scripts/services/entityFactory.js.ftl", "/scripts/services/" + entity.getName() + "Factory.js");
+        perEntityTemplates.put("scripts/controllers/newEntityController.js.ftl", "/scripts/controllers/new" + entity.getName() + "Controller.js");
+        perEntityTemplates.put("scripts/controllers/searchEntityController.js.ftl", "/scripts/controllers/search" + entity.getName() + "Controller.js");
+        perEntityTemplates.put("scripts/controllers/editEntityController.js.ftl", "/scripts/controllers/edit" + entity.getName() + "Controller.js");
         
         FreemarkerClient freemarkerClient = new FreemarkerClient();
         for (String entityTemplate : perEntityTemplates.keySet()) {
