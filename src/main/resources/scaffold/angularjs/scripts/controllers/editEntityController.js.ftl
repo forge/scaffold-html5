@@ -20,7 +20,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     $scope.disabled = false;
 
     $scope.get = function() {
-        ${angularResource}.get({${entityId}:$routeParams.${entityId}}, function(data){
+        var successCallback = function(data){
             self.original = data;
             ${model} = new ${angularResource}(self.original);
             <#list properties as property>
@@ -53,9 +53,11 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
             });
             </#if>
             </#list>
-        }, function() {
+        };
+        var errorCallback = function() {
             $location.path("${entityRoute}");
-        });
+        };
+        ${angularResource}.get({${entityId}:$routeParams.${entityId}}, successCallback, errorCallback);
     };
 
     $scope.isClean = function() {
@@ -63,12 +65,14 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     };
 
     $scope.save = function() {
-        ${model}.$update(function(){
+        var successCallback = function(){
             $scope.get();
             $scope.displayError = false;
-        }, function() {
+        };
+        var errorCallback = function() {
             $scope.displayError=true;
-        });
+        };
+        ${model}.$update(successCallback, errorCallback);
     };
 
     $scope.cancel = function() {
@@ -76,12 +80,14 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     };
 
     $scope.remove = function() {
-        ${model}.$remove(function() {
+        var successCallback = function() {
             $location.path("${entityRoute}");
             $scope.displayError = false;
-        }, function() {
+        };
+        var errorCallback = function() {
             $scope.displayError=true;
-        });
+        }; 
+        ${model}.$remove(successCallback, errorCallback);
     };
     
     <#list properties as property>

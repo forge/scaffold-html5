@@ -6,7 +6,7 @@
     model = "$scope.${entityName?uncap_first}"
     entityRoute = "/${entityName}s"
 >
-
+<#--An assignment expression that 'captures' all the related resources -->
 <#assign relatedResources>
 <#list properties as property>
 <#if (property["many-to-one"]!) == "true" || (property["one-to-one"]!) == "true" || (property["n-to-many"]!) == "true">
@@ -15,7 +15,7 @@
 </#list>
 </#assign>
 
-angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, ${angularResource} ${relatedResources}) {
+angular.module('${angularApp}').controller('${angularController}', function ($scope, $location, locationParser, ${angularResource} ${relatedResources}) {
     $scope.disabled = false;
     
     <#list properties as property>
@@ -53,16 +53,15 @@ angular.module('${angularApp}').controller('${angularController}', function ($sc
     </#list>
 
     $scope.save = function() {
-        ${angularResource}.save(${model}, function(data,responseHeaders){
-            // Get the Location header and parse it.
-            var locationHeader = responseHeaders('Location');
-            var fragments = locationHeader.split('/');
-            var id = fragments[fragments.length -1];
+        var successCallback = function(data,responseHeaders){
+            var id = locationParser(responseHeaders);
             $location.path('${entityRoute}/edit/' + id);
             $scope.displayError = false;
-        }, function() {
+        };
+        var errorCallback = function() {
             $scope.displayError = true;
-        });
+        };
+        ${angularResource}.save(${model}, successCallback, errorCallback);
     };
     
     $scope.cancel = function() {

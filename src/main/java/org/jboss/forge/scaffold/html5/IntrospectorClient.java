@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.Project;
 import org.jboss.forge.project.facets.JavaSourceFacet;
@@ -13,6 +15,7 @@ import org.jboss.forge.resources.java.JavaResource;
 import org.jboss.forge.scaffold.html5.metawidget.inspector.ForgeInspector;
 import org.jboss.forge.scaffold.html5.metawidget.inspector.propertystyle.ForgePropertyStyle;
 import org.jboss.forge.scaffold.html5.metawidget.inspector.propertystyle.ForgePropertyStyleConfig;
+import org.jboss.forge.shell.ShellPrompt;
 import org.metawidget.inspector.beanvalidation.BeanValidationInspector;
 import org.metawidget.inspector.composite.CompositeInspector;
 import org.metawidget.inspector.composite.CompositeInspectorConfig;
@@ -25,11 +28,14 @@ import org.w3c.dom.Element;
 
 public class IntrospectorClient {
 
+    @Inject
     private Project project;
+    
+    @Inject
+    private ShellPrompt prompt;
 
-    public IntrospectorClient(Project project) {
-        this.project = project;
-    }
+    @Inject
+    RelatedTypeHolder relatedClassHolder;
 
     public Map<String, Object> inspect(JavaClass entity) {
         Map<String, Object> root = new HashMap<String, Object>();
@@ -83,17 +89,29 @@ public class IntrospectorClient {
             String manyToOneRel = propertyAttributes.get("many-to-one");
             if ("true".equals(manyToOneRel)) {
                 String manyToOneType = propertyAttributes.get("type");
-                propertyAttributes.put("simpleType", getSimpleName(manyToOneType));
+                relatedClassHolder.setRelatedType(manyToOneType);
+                String simpleName = getSimpleName(manyToOneType);
+                propertyAttributes.put("simpleType", simpleName);
+                propertyAttributes.put("optionLabel", prompt.promptCompleter("Which property of " + simpleName
+                        + " do you want to display in the dropdown ?", RelatedPropertyCompleter.class));
             }
             String oneToOneRel = propertyAttributes.get("one-to-one");
             if ("true".equals(oneToOneRel)) {
                 String oneToOneType = propertyAttributes.get("type");
-                propertyAttributes.put("simpleType", getSimpleName(oneToOneType));
+                relatedClassHolder.setRelatedType(oneToOneType);
+                String simpleName = getSimpleName(oneToOneType);
+                propertyAttributes.put("simpleType", simpleName);
+                propertyAttributes.put("optionLabel", prompt.promptCompleter("Which property of " + simpleName
+                        + " do you want to display in the dropdown ?", RelatedPropertyCompleter.class));
             }
             String oneToManyRel = propertyAttributes.get("n-to-many");
             if ("true".equals(oneToManyRel)) {
                 String oneToManyType = propertyAttributes.get("parameterized-type");
-                propertyAttributes.put("simpleType", getSimpleName(oneToManyType));
+                relatedClassHolder.setRelatedType(oneToManyType);
+                String simpleName = getSimpleName(oneToManyType);
+                propertyAttributes.put("simpleType", simpleName);
+                propertyAttributes.put("optionLabel", prompt.promptCompleter("Which property of " + simpleName
+                        + " do you want to display in the dropdown ?", RelatedPropertyCompleter.class));
             }
 
             // Add the property attributes into a list, made accessible as a sequence to the FTL
@@ -115,4 +133,5 @@ public class IntrospectorClient {
             throw new RuntimeException(fileEx);
         }
     }
+    
 }

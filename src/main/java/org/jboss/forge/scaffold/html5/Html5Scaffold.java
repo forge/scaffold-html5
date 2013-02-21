@@ -36,6 +36,9 @@ import org.metawidget.util.simple.StringUtils;
 public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
 
     protected ShellPrompt prompt;
+    
+    @Inject
+    protected IntrospectorClient introspectorClient;
 
     @Inject
     public Html5Scaffold(final ShellPrompt prompt) {
@@ -105,6 +108,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         Map<String, String> projectGlobalTemplates = new HashMap<String, String>();
         projectGlobalTemplates.put("index.html.ftl", "index.html");
         projectGlobalTemplates.put("scripts/app.js.ftl", "scripts/app.js");
+        projectGlobalTemplates.put("scripts/services/locationParser.js.ftl", "scripts/services/locationParser.js");
         projectGlobalTemplates.put("scripts/filters/startFromFilter.js.ftl", "scripts/filters/startFromFilter.js");
         
         FreemarkerClient freemarkerClient = new FreemarkerClient();
@@ -122,7 +126,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         
-        Map<String, Object> root = new IntrospectorClient(project).inspect(entity);
+        Map<String, Object> root = introspectorClient.inspect(entity);
         MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
         String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
         String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());
