@@ -29,7 +29,7 @@
                 </nav>
             </div>
             <div class="span9">
-                <div id="main" class="hero-unit" ng-view>
+                <div id="main" class="well" ng-view>
                 </div>
             </div>
         </div>

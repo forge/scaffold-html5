@@ -1,4 +1,4 @@
-<table class="table table-bordered">
+<table class="table table-bordered table-striped clearfix">
     <thead>
         <tr>
         <#list properties as property>
@@ -16,7 +16,7 @@
         <#list properties as property>
         <#if (property.hidden!"false") != "true">
             <#if (property["many-to-one"]!"false") == "true" || (property["one-to-one"]!"false") == "true">
-            <td><a href="#/${entityName}s/edit/{{result.id}}">{{result.${property.name}.id}}</a></td>
+            <td><a href="#/${entityName}s/edit/{{result.id}}">{{result.${property.name}.${property.optionLabel}}}</a></td>
             <#elseif (property["n-to-many"]!"false") == "true">
             <#-- Do nothing. We won't allow for display of collection properties in search results for now. -->
             <#else>

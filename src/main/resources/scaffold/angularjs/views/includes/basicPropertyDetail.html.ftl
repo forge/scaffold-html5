@@ -6,7 +6,7 @@
     <div class="control-group" ng-class="{error: ${formProperty}.$invalid}">
         <label for="${property.name}" class="control-label">${propertyLabel}</label>
         <div class="controls">
-            <input id="${property.name}" name="${property.name}"
+            <input id="${property.name}" name="${property.name}"<#t/>
                 <#if property.type == "number"> type="number"<#t/>
                     <#if property["minimum-value"]??> min="${property["minimum-value"]}"</#if><#t/>
                     <#if property["maximum-value"]??> max="${property["maximum-value"]}"</#if><#t/>
@@ -15,7 +15,7 @@
                 <#elseif (property["datetime-type"]!"") == "both"> type="datetime"<#t/>
                 <#else> type="text"</#if><#t/>
                 <#if (property.required!"false") == "true"> required</#if><#t/>
-                <#if property["maximum-length"]??> maxlength="${property["maximum-length"]}"</#if> ng-model="${modelProperty}" placeholder="Enter the ${entityName} ${property.name}"></input>
+                <#if property["maximum-length"]??> maxlength="${property["maximum-length"]}"</#if><#lt/> ng-model="${modelProperty}" placeholder="Enter the ${entityName} ${property.name}"></input>
             <#if (property.required!) == "true">
             <span class="help-inline" ng-show="${formProperty}.$error.required">required</span> 
             </#if>
