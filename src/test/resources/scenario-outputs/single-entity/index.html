@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" ng-app="test">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Test</title>
+    <link href="styles/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="styles/main.css" rel="stylesheet" media="screen">
+    <link href="styles/bootstrap-responsive.css" rel="stylesheet" media="screen">
+</head>
+<body>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="#">Test</a>
+			</div>
+		</div>
+	</div>
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span3">
+                <img src="images/forge-logo.png" alt="JBoss Forge"></img>
+                <nav class="well sidebar-nav" ng-controller="NavController">
+                    <ul id="sidebar-entries" class="nav nav-list">
+                    	<li ng-class="{active: matchesRoute('Customers')}"><a href="#/Customers">Customers</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="span9">
+                <div id="main" class="well" ng-view>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="scripts/vendor/angular.js"></script>
+    <script src="scripts/vendor/angular-resource.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/filters/startFromFilter.js"></script>
+    <script src="scripts/services/locationParser.js"></script>
+    <script src="scripts/services/CustomerFactory.js"></script>
+    <script src="scripts/controllers/newCustomerController.js"></script>
+    <script src="scripts/controllers/searchCustomerController.js"></script>
+    <script src="scripts/controllers/editCustomerController.js"></script>
+</body>
+</html>
