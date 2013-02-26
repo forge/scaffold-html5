@@ -66,9 +66,14 @@ public class IntrospectorClient {
             // Extract simple type name of the relationship types
             boolean isManyToOneRel = Boolean.parseBoolean(propertyAttributes.get("many-to-one"));
             boolean isOneToOneRel = Boolean.parseBoolean(propertyAttributes.get("one-to-one"));
-            boolean isOneToManyRel = Boolean.parseBoolean(propertyAttributes.get("n-to-many"));
-            if (isManyToOneRel || isOneToManyRel || isOneToOneRel) {
-                String rightHandSideType = propertyAttributes.get("type");
+            boolean isNToManyRel = Boolean.parseBoolean(propertyAttributes.get("n-to-many"));
+            if (isManyToOneRel || isNToManyRel || isOneToOneRel) {
+                String rightHandSideType;
+                if (isOneToOneRel || isManyToOneRel) {
+                    rightHandSideType = propertyAttributes.get("type");
+                } else {
+                    rightHandSideType = propertyAttributes.get("parameterized-type");
+                }
                 String rightHandSideSimpleName = getSimpleName(rightHandSideType);
                 propertyAttributes.put("simpleType", rightHandSideSimpleName);
                 List<String> fieldsToDisplay = getFieldsToDisplay(rightHandSideType);
@@ -94,7 +99,6 @@ public class IntrospectorClient {
         Element inspectedEntity = XmlUtils.getFirstChildElement(inspectionResult);
         Element inspectedProperty = XmlUtils.getFirstChildElement(inspectedEntity);
         while (inspectedProperty != null) {
-            System.out.println(XmlUtils.nodeToString(inspectedProperty, true));
             Map<String, String> propertyAttributes = XmlUtils.getAttributesAsMap(inspectedProperty);
             String hidden = propertyAttributes.get("hidden");
             String required = propertyAttributes.get("required");
