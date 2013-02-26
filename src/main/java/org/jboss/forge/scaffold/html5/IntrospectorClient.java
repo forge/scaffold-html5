@@ -43,6 +43,75 @@ public class IntrospectorClient {
         // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
         root.put("entityName", entity.getName());
 
+        Element inspectionResult = inspectEntity(entity);
+        Element inspectedEntity = XmlUtils.getFirstChildElement(inspectionResult);
+        System.out.println(XmlUtils.nodeToString(inspectedEntity, true));
+
+        Element inspectedProperty = XmlUtils.getFirstChildElement(inspectedEntity);
+        List<Map<String, String>> viewPropertyAttributes = new ArrayList<Map<String, String>>();
+        while (inspectedProperty != null) {
+            System.out.println(XmlUtils.nodeToString(inspectedProperty, true));
+            Map<String, String> propertyAttributes = XmlUtils.getAttributesAsMap(inspectedProperty);
+
+            // Canonicalize all numerical types in Java to "number" for HTML5 form input type support
+            String propertyType = propertyAttributes.get("type");
+            if (propertyType.equals(short.class.getName()) || propertyType.equals(int.class.getName())
+                    || propertyType.equals(long.class.getName()) || propertyType.equals(float.class.getName())
+                    || propertyType.equals(double.class.getName()) || propertyType.equals(Short.class.getName())
+                    || propertyType.equals(Integer.class.getName()) || propertyType.equals(Long.class.getName())
+                    || propertyType.equals(Float.class.getName()) || propertyType.equals(Double.class.getName())) {
+                propertyAttributes.put("type", "number");
+            }
+
+            // Extract simple type name of the relationship types
+            boolean isManyToOneRel = Boolean.parseBoolean(propertyAttributes.get("many-to-one"));
+            boolean isOneToOneRel = Boolean.parseBoolean(propertyAttributes.get("one-to-one"));
+            boolean isOneToManyRel = Boolean.parseBoolean(propertyAttributes.get("n-to-many"));
+            if (isManyToOneRel || isOneToManyRel || isOneToOneRel) {
+                String rightHandSideType = propertyAttributes.get("type");
+                String rightHandSideSimpleName = getSimpleName(rightHandSideType);
+                propertyAttributes.put("simpleType", rightHandSideSimpleName);
+                List<String> fieldsToDisplay = getFieldsToDisplay(rightHandSideType);
+                String defaultField = fieldsToDisplay.size() > 0 ? fieldsToDisplay.get(0) : null;
+                propertyAttributes.put("optionLabel", prompt.promptChoiceTyped("Which property of " + rightHandSideSimpleName
+                        + " do you want to display in the " + entity.getName() + " views ?", fieldsToDisplay, defaultField));
+            }
+
+            // Add the property attributes into a list, made accessible as a sequence to the FTL
+            viewPropertyAttributes.add(propertyAttributes);
+            inspectedProperty = XmlUtils.getNextSiblingElement(inspectedProperty);
+        }
+        root.put("properties", viewPropertyAttributes);
+        System.out.println("Root:" + root);
+        return root;
+    }
+
+    // TODO; Extract this method into it's own class, for unit testing.
+    private List<String> getFieldsToDisplay(String manyToOneType) {
+        List<String> displayableProperties = new ArrayList<String>();
+        JavaClass javaClass = getJavaClass(manyToOneType);
+        Element inspectionResult = inspectEntity(javaClass);
+        Element inspectedEntity = XmlUtils.getFirstChildElement(inspectionResult);
+        Element inspectedProperty = XmlUtils.getFirstChildElement(inspectedEntity);
+        while (inspectedProperty != null) {
+            System.out.println(XmlUtils.nodeToString(inspectedProperty, true));
+            Map<String, String> propertyAttributes = XmlUtils.getAttributesAsMap(inspectedProperty);
+            String hidden = propertyAttributes.get("hidden");
+            String required = propertyAttributes.get("required");
+            boolean isHidden = Boolean.parseBoolean(hidden);
+            boolean isRequired = Boolean.parseBoolean(required);
+            if (!isHidden) {
+                displayableProperties.add(propertyAttributes.get("name"));
+            } else if (isRequired) {
+                // Do nothing if hidden, unless required
+                displayableProperties.add(propertyAttributes.get("name"));
+            }
+            inspectedProperty = XmlUtils.getNextSiblingElement(inspectedProperty);
+        }
+        return displayableProperties;
+    }
+
+    private Element inspectEntity(JavaClass entity) {
         ForgePropertyStyleConfig forgePropertyStyleConfig = new ForgePropertyStyleConfig();
         forgePropertyStyleConfig.setProject(this.project);
         BaseObjectInspectorConfig baseObjectInspectorConfig = new BaseObjectInspectorConfig();
@@ -66,70 +135,20 @@ public class IntrospectorClient {
         CompositeInspector compositeInspector = new CompositeInspector(compositeInspectorConfig);
 
         Element inspectionResult = compositeInspector.inspectAsDom(null, entity.getQualifiedName(), (String[]) null);
-        Element inspectedEntity = XmlUtils.getFirstChildElement(inspectionResult);
-        System.out.println(XmlUtils.nodeToString(inspectedEntity, true));
-
-        Element inspectedProperty = XmlUtils.getFirstChildElement(inspectedEntity);
-        List<Map<String, String>> viewPropertyAttributes = new ArrayList<Map<String, String>>();
-        while (inspectedProperty != null) {
-            System.out.println(XmlUtils.nodeToString(inspectedProperty, true));
-            Map<String, String> propertyAttributes = XmlUtils.getAttributesAsMap(inspectedProperty);
-
-            // Canonicalize all numerical types in Java to "number" for HTML5 form input type support
-            String propertyType = propertyAttributes.get("type");
-            if (propertyType.equals(short.class.getName()) || propertyType.equals(int.class.getName())
-                    || propertyType.equals(long.class.getName()) || propertyType.equals(float.class.getName())
-                    || propertyType.equals(double.class.getName()) || propertyType.equals(Short.class.getName())
-                    || propertyType.equals(Integer.class.getName()) || propertyType.equals(Long.class.getName())
-                    || propertyType.equals(Float.class.getName()) || propertyType.equals(Double.class.getName())) {
-                propertyAttributes.put("type", "number");
-            }
-
-            // Extract simple type name of the relationship types
-            String manyToOneRel = propertyAttributes.get("many-to-one");
-            if ("true".equals(manyToOneRel)) {
-                String manyToOneType = propertyAttributes.get("type");
-                relatedClassHolder.setRelatedType(manyToOneType);
-                String simpleName = getSimpleName(manyToOneType);
-                propertyAttributes.put("simpleType", simpleName);
-                propertyAttributes.put("optionLabel", prompt.promptCompleter("Which property of " + simpleName
-                        + " do you want to display in the dropdown ?", RelatedPropertyCompleter.class));
-            }
-            String oneToOneRel = propertyAttributes.get("one-to-one");
-            if ("true".equals(oneToOneRel)) {
-                String oneToOneType = propertyAttributes.get("type");
-                relatedClassHolder.setRelatedType(oneToOneType);
-                String simpleName = getSimpleName(oneToOneType);
-                propertyAttributes.put("simpleType", simpleName);
-                propertyAttributes.put("optionLabel", prompt.promptCompleter("Which property of " + simpleName
-                        + " do you want to display in the dropdown ?", RelatedPropertyCompleter.class));
-            }
-            String oneToManyRel = propertyAttributes.get("n-to-many");
-            if ("true".equals(oneToManyRel)) {
-                String oneToManyType = propertyAttributes.get("parameterized-type");
-                relatedClassHolder.setRelatedType(oneToManyType);
-                String simpleName = getSimpleName(oneToManyType);
-                propertyAttributes.put("simpleType", simpleName);
-                propertyAttributes.put("optionLabel", prompt.promptCompleter("Which property of " + simpleName
-                        + " do you want to display in the dropdown ?", RelatedPropertyCompleter.class));
-            }
-
-            // Add the property attributes into a list, made accessible as a sequence to the FTL
-            viewPropertyAttributes.add(propertyAttributes);
-            inspectedProperty = XmlUtils.getNextSiblingElement(inspectedProperty);
-        }
-        root.put("properties", viewPropertyAttributes);
-        System.out.println("Root:" + root);
-        return root;
+        return inspectionResult;
     }
 
     private String getSimpleName(String manyToOneType) {
+        return getJavaClass(manyToOneType).getName();
+    }
+
+    private JavaClass getJavaClass(String qualifiedType) {
         JavaSourceFacet java = this.project.getFacet(JavaSourceFacet.class);
         try {
-            JavaResource relatedResource = java.getJavaResource(manyToOneType);
-            return relatedResource.getJavaSource().getName();
+            JavaResource resource = java.getJavaResource(qualifiedType);
+            JavaClass javaClass = (JavaClass) resource.getJavaSource();
+            return javaClass;
         } catch (FileNotFoundException fileEx) {
-            // This is not supposed to happen, since the JPA entity class/file is supposed to be present by now.
             throw new RuntimeException(fileEx);
         }
     }
