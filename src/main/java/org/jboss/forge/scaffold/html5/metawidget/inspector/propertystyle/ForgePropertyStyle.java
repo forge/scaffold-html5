@@ -1,23 +1,8 @@
 /*
- * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc., and individual contributors
- * by the @authors tag. See the copyright.txt in the distribution for a
- * full listing of individual contributors.
+ * Copyright 2012-2013 Red Hat, Inc. and/or its affiliates.
  *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * Licensed under the Eclipse Public License version 1.0, available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.jboss.forge.scaffold.html5.metawidget.inspector.propertystyle;
 
@@ -29,8 +14,10 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.forge.parser.java.EnumConstant;
 import org.jboss.forge.parser.java.Field;
 import org.jboss.forge.parser.java.FieldHolder;
+import org.jboss.forge.parser.java.JavaEnum;
 import org.jboss.forge.parser.java.JavaSource;
 import org.jboss.forge.parser.java.Method;
 import org.jboss.forge.parser.java.MethodHolder;
@@ -60,9 +47,9 @@ public class ForgePropertyStyle
    // Private members
    //
 
-   private Project project;
+   private final Project project;
 
-   private MessageFormat privateFieldConvention;
+   private final MessageFormat privateFieldConvention;
 
    //
    // Constructor
@@ -142,15 +129,13 @@ public class ForgePropertyStyle
 
          // Lookup properties
 
-         JavaSource<?> clazz = sourceForName(type);
+         JavaSource<?> clazz = sourceForName(this.project,type);
 
-         if (clazz == null)
+         if (clazz instanceof MethodHolder<?>)
          {
-            return properties;
+            lookupGetters(properties, (MethodHolder<?>) clazz);
+            lookupSetters(properties, (MethodHolder<?>) clazz);
          }
-
-         lookupGetters(properties, (MethodHolder<?>) clazz);
-         lookupSetters(properties, (MethodHolder<?>) clazz);
 
          return properties;
       }
@@ -211,7 +196,7 @@ public class ForgePropertyStyle
 
          properties
                   .put(propertyName,
-                           new ForgeProperty(propertyName, returnType, method, null, privateField));
+                           new ForgeProperty(propertyName, returnType, method, null, privateField, this.project));
       }
    }
 
@@ -247,11 +232,6 @@ public class ForgePropertyStyle
          return null;
       }
 
-      if (Character.isLowerCase(propertyName.charAt(0)))
-      {
-         return null;
-      }
-
       return StringUtils.decapitalize(propertyName);
    }
 
@@ -259,12 +239,12 @@ public class ForgePropertyStyle
     * Lookup setter-based properties.
     * <p>
     * This method will be called after <code>lookupFields</code> and <code>lookupGetters</code>.
- * @param <O>
     */
 
-   protected <O extends JavaSource<O>> void lookupSetters(final Map<String, Property> properties, final MethodHolder<?> clazz)
+   protected <O extends JavaSource<O>> void lookupSetters(final Map<String, Property> properties,
+            final MethodHolder<O> clazz)
    {
-      for (Method<?> method : clazz.getMethods())
+      for (Method<O> method : clazz.getMethods())
       {
          // Exclude static methods
 
@@ -275,7 +255,7 @@ public class ForgePropertyStyle
 
          // Get type
 
-         List<?> parameters = method.getParameters();
+         List<Parameter<O>> parameters = method.getParameters();
 
          if (parameters.size() != 1)
          {
@@ -295,7 +275,7 @@ public class ForgePropertyStyle
          //
          // (explicitly set to null in case we encountered an imbalanced field/getter)
 
-         String type = ((Parameter) parameters.get(0)).getType();
+         String type = parameters.get(0).getType();
 
          Field<?> privateField = getPrivateField((FieldHolder<?>) clazz, propertyName);
 
@@ -318,7 +298,7 @@ public class ForgePropertyStyle
                      propertyName,
                      new ForgeProperty(propertyName, existingForgeProperty.getType(),
                               existingForgeProperty.getReadMethod(), method, getPrivateField((FieldHolder<?>) clazz,
-                                       propertyName)));
+                                       propertyName), this.project));
             continue;
          }
 
@@ -331,7 +311,7 @@ public class ForgePropertyStyle
 
          properties
                   .put(propertyName,
-                           new ForgeProperty(propertyName, type, null, method, privateField));
+                           new ForgeProperty(propertyName, type, null, method, privateField, this.project));
       }
    }
 
@@ -352,11 +332,6 @@ public class ForgePropertyStyle
       }
 
       String propertyName = methodName.substring(ClassUtils.JAVABEAN_SET_PREFIX.length());
-
-      if (Character.isLowerCase(propertyName.charAt(0)))
-      {
-         return null;
-      }
 
       return StringUtils.decapitalize(propertyName);
    }
@@ -391,7 +366,7 @@ public class ForgePropertyStyle
 
       // FORGE-402: support fields starting with capital letter
 
-      if (field == null && Character.isLowerCase(propertyName.charAt(0)))
+      if (field == null && !Character.isUpperCase(propertyName.charAt( 0 )))
       {
          field = fieldHolder.getField(StringUtils.capitalize(propertyName));
       }
@@ -403,17 +378,14 @@ public class ForgePropertyStyle
    // Private methods
    //
 
-   private JavaSource<?> sourceForName(final String type)
+   /*package private*/
+
+   static JavaSource<?> sourceForName(final Project project, final String type)
    {
       try
       {
-         JavaSourceFacet javaSourceFact = this.project.getFacet(JavaSourceFacet.class);
-
-         // (strip generics)
-
-         String typeToUse = StringUtils.substringBefore(type, "<");
-
-         return javaSourceFact.getJavaResource(typeToUse).getJavaSource();
+         JavaSourceFacet javaSourceFact = project.getFacet(JavaSourceFacet.class);
+         return javaSourceFact.getJavaResource(type).getJavaSource();
       }
       catch (FileNotFoundException e)
       {
@@ -440,13 +412,16 @@ public class ForgePropertyStyle
 
       private final Field<?> privateField;
 
+      private final Project project;
+
       //
       // Constructor
       //
 
       public ForgeProperty(final String name, final String type, final Method<?> readMethod,
                final Method<?> writeMethod,
-               final Field<?> privateField)
+               final Field<?> privateField,
+               final Project project)
       {
          super(name, type);
 
@@ -461,6 +436,7 @@ public class ForgePropertyStyle
          }
 
          this.privateField = privateField;
+         this.project = project;
       }
 
       //
@@ -510,9 +486,19 @@ public class ForgePropertyStyle
 
          if (annotation != null)
          {
-            @SuppressWarnings("unchecked")
-            T annotationProxy = (T) AnnotationProxy.newInstance(annotation);
+            T annotationProxy = AnnotationProxy.newInstance(annotation);
             return annotationProxy;
+         }
+
+         return null;
+      }
+
+      public List<EnumConstant<JavaEnum>> getEnumConstants()
+      {
+         JavaSource<?> source = sourceForName( this.project, getType() );
+
+         if ( source instanceof JavaEnum ) {
+            return ((JavaEnum) source).getEnumConstants();
          }
 
          return null;
@@ -548,13 +534,11 @@ public class ForgePropertyStyle
 
       public Method<?> getReadMethod()
       {
-
          return this.readMethod;
       }
 
       public Method<?> getWriteMethod()
       {
-
          return this.writeMethod;
       }
    }
