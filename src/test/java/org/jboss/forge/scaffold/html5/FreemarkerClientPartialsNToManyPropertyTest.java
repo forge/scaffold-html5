@@ -35,7 +35,7 @@ public class FreemarkerClientPartialsNToManyPropertyTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", idProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/nToManyPropertyDetail.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/nToManyPropertyDetail.html.ftl");
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
     
@@ -50,7 +50,7 @@ public class FreemarkerClientPartialsNToManyPropertyTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", idProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/nToManyPropertyDetail.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/nToManyPropertyDetail.html.ftl");
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
     
@@ -64,12 +64,13 @@ public class FreemarkerClientPartialsNToManyPropertyTest {
         ordersProperties.put("parameterized-type", "com.example.scaffoldtester.model.StoreOrder");
         ordersProperties.put("type", "java.util.Set");
         ordersProperties.put("simpleType", "StoreOrder");
+        ordersProperties.put("optionLabel", "id");
         
         Map<String, Object> root = new HashMap<String, Object>();
         String entityName = "SampleEntity";
         root.put("entityName", entityName);
         root.put("property", ordersProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/nToManyPropertyDetail.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/nToManyPropertyDetail.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -106,12 +107,13 @@ public class FreemarkerClientPartialsNToManyPropertyTest {
         usersProperties.put("parameterized-type", "com.example.scaffoldtester.model.UserIdentity");
         usersProperties.put("type", "java.util.Set");
         usersProperties.put("simpleType", "UserIdentity");
+        usersProperties.put("optionLabel", "id");
         
         Map<String, Object> root = new HashMap<String, Object>();
         String entityName = "SampleEntity";
         root.put("entityName", entityName);
         root.put("property", usersProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/nToManyPropertyDetail.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/nToManyPropertyDetail.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         

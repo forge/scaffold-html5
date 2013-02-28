@@ -12,6 +12,8 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
     public void testScaffoldForSingleEntity() throws Exception {
         generateCustomerEntity();
 
+        generateRestResources();
+
         generateScaffold();
 
         WebResourceFacet web = project.getFacet(WebResourceFacet.class);
@@ -37,14 +39,16 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         // Check the generated Angular services
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "single-entity");
     }
-    
+
     @Test
     public void testScaffoldForManyToOneRelation() throws Exception {
         generateCustomerEntity();
-        
+
         generateStoreOrderEntity();
-        
+
         generateManyStoreOrderOneCustomerRelation();
+
+        generateRestResources();
 
         generateScaffold();
 
@@ -77,7 +81,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "many-to-one");
         assertWebResourceContents(web, "/scripts/services/StoreOrderFactory.js", "many-to-one");
     }
-    
+
     @Test
     public void testScaffoldForOneToOneRelation() throws Exception {
         generateCustomerEntity();
@@ -85,7 +89,9 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         generateAddressEntity();
 
         generateOneCustomerOneAddressRelation();
-        
+
+        generateRestResources();
+
         generateScaffold();
 
         WebResourceFacet web = project.getFacet(WebResourceFacet.class);
@@ -117,14 +123,16 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "one-to-one");
         assertWebResourceContents(web, "/scripts/services/AddressFactory.js", "one-to-one");
     }
-    
+
     @Test
     public void testScaffoldForOneToManyRelation() throws Exception {
         generateCustomerEntity();
-        
+
         generateStoreOrderEntity();
-        
+
         generateOneCustomerManyStoreOrderRelation();
+
+        generateRestResources();
 
         generateScaffold();
 
@@ -157,7 +165,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "one-to-many");
         assertWebResourceContents(web, "/scripts/services/StoreOrderFactory.js", "one-to-many");
     }
-    
+
     @Test
     public void testScaffoldForManyToManyRelation() throws Exception {
         generateUserIdentityEntity();
@@ -165,6 +173,8 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         generateGroupIdentityEntity();
 
         generateManyGroupManyUserRelation();
+
+        generateRestResources();
 
         generateScaffold();
 
@@ -205,7 +215,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         getShell().execute("field temporal --type DATE --named dateOfBirth");
         getShell().execute("constraint NotNull --onProperty firstName");
     }
-    
+
     private void generateStoreOrderEntity() throws Exception {
         queueInputLines("");
         getShell().execute("entity --named StoreOrder");
@@ -229,31 +239,31 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         getShell().execute("entity --named UserIdentity");
         getShell().execute("field string --named userName");
     }
-    
+
     private void generateGroupIdentityEntity() throws Exception {
         queueInputLines("");
         getShell().execute("entity --named GroupIdentity");
         getShell().execute("field string --named groupName");
     }
-    
+
     private void generateOneCustomerManyStoreOrderRelation() throws Exception {
         getShell().execute("cd ../Customer.java");
-        getShell().execute("field oneToMany --named orders --fieldType com.test.model.StoreOrder.java");        
+        getShell().execute("field oneToMany --named orders --fieldType com.test.model.StoreOrder.java");
     }
 
     private void generateOneCustomerOneAddressRelation() throws Exception {
         getShell().execute("cd ../Customer.java");
         getShell().execute("field oneToOne --named shippingAddress --fieldType com.test.model.Address.java");
     }
-    
+
     private void generateManyStoreOrderOneCustomerRelation() throws Exception {
         getShell().execute("cd ../StoreOrder.java");
         getShell().execute("field manyToOne --named customer --fieldType com.test.model.Customer.java");
     }
-    
+
     private void generateManyGroupManyUserRelation() throws Exception {
         getShell().execute("cd ../GroupIdentity.java");
         getShell().execute("field manyToMany --named users --fieldType com.test.model.UserIdentity.java");
     }
-    
+
 }

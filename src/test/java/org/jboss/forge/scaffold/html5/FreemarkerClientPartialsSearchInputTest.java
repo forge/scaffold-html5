@@ -34,7 +34,7 @@ public class FreemarkerClientPartialsSearchInputTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", idProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchFormInput.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchFormInput.html.ftl");
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
     
@@ -49,7 +49,7 @@ public class FreemarkerClientPartialsSearchInputTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", idProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchFormInput.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchFormInput.html.ftl");
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
     
@@ -67,7 +67,7 @@ public class FreemarkerClientPartialsSearchInputTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", ordersProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchFormInput.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchFormInput.html.ftl");
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
     
@@ -85,7 +85,7 @@ public class FreemarkerClientPartialsSearchInputTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", usersProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchFormInput.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchFormInput.html.ftl");
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
     
@@ -98,7 +98,7 @@ public class FreemarkerClientPartialsSearchInputTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", nameProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchFormInput.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchFormInput.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -120,7 +120,7 @@ public class FreemarkerClientPartialsSearchInputTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", ageProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchFormInput.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchFormInput.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -143,7 +143,7 @@ public class FreemarkerClientPartialsSearchInputTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", dateOfBirthProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchFormInput.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchFormInput.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -164,11 +164,12 @@ public class FreemarkerClientPartialsSearchInputTest {
         voucherProperties.put("type", "com.example.scaffoldtester.model.DiscountVoucher");
         voucherProperties.put("one-to-one", "true");
         voucherProperties.put("simpleType", "DiscountVoucher");
+        voucherProperties.put("optionLabel", "id");
         
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", voucherProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchFormInput.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchFormInput.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -188,11 +189,12 @@ public class FreemarkerClientPartialsSearchInputTest {
         customerProperties.put("type", "com.example.scaffoldtester.model.Customer");
         customerProperties.put("many-to-one", "true");
         customerProperties.put("simpleType", "Customer");
+        customerProperties.put("optionLabel", "id");
         
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", customerProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchFormInput.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchFormInput.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         

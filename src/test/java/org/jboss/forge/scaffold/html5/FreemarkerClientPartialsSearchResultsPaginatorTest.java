@@ -42,7 +42,7 @@ public class FreemarkerClientPartialsSearchResultsPaginatorTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", idProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResultsPaginator.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResultsPaginator.html.ftl");
         assertThat(output.trim(), IsEqual.equalTo(PAGINATOR_OUTPUT));
     }
 

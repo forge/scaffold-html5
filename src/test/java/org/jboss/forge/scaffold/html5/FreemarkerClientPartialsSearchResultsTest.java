@@ -38,7 +38,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("properties", properties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResults.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResults.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -60,7 +60,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("properties", properties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResults.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResults.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -85,7 +85,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("properties", properties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResults.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResults.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -110,7 +110,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("properties", properties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResults.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResults.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -130,7 +130,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("properties", properties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResults.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResults.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -159,7 +159,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("properties", properties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResults.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResults.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -189,7 +189,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("properties", properties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResults.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResults.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -214,6 +214,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         voucherProperties.put("type", "com.example.scaffoldtester.model.DiscountVoucher");
         voucherProperties.put("one-to-one", "true");
         voucherProperties.put("simpleType", "DiscountVoucher");
+        voucherProperties.put("optionLabel", "id");
         
         List<Map<String,? extends Object>> properties = new ArrayList<Map<String,? extends Object>>();
         properties.add(voucherProperties);
@@ -221,7 +222,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("properties", properties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResults.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResults.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -246,6 +247,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         customerProperties.put("type", "com.example.scaffoldtester.model.Customer");
         customerProperties.put("many-to-one", "true");
         customerProperties.put("simpleType", "Customer");
+        customerProperties.put("optionLabel", "id");
         
         List<Map<String,? extends Object>> properties = new ArrayList<Map<String,? extends Object>>();
         properties.add(customerProperties);
@@ -253,7 +255,7 @@ public class FreemarkerClientPartialsSearchResultsTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("properties", properties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/searchResults.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/searchResults.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         

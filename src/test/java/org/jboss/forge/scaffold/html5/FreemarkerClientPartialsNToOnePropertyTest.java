@@ -35,7 +35,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", idProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/nToOnePropertyDetail.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/nToOnePropertyDetail.html.ftl");
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
     
@@ -50,7 +50,7 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("entityName", "SampleEntity");
         root.put("property", idProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/nToOnePropertyDetail.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/nToOnePropertyDetail.html.ftl");
         assertThat(output.trim(), IsEqual.equalTo(""));
     }
     
@@ -62,12 +62,13 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         voucherProperties.put("type", "com.example.scaffoldtester.model.DiscountVoucher");
         voucherProperties.put("one-to-one", "true");
         voucherProperties.put("simpleType", "DiscountVoucher");
+        voucherProperties.put("optionLabel", "id");
         
         Map<String, Object> root = new HashMap<String, Object>();
         String entityName = "SampleEntity";
         root.put("entityName", entityName);
         root.put("property", voucherProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/nToOnePropertyDetail.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/nToOnePropertyDetail.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         
@@ -95,12 +96,13 @@ public class FreemarkerClientPartialsNToOnePropertyTest {
         customerProperties.put("type", "com.example.scaffoldtester.model.Customer");
         customerProperties.put("many-to-one", "true");
         customerProperties.put("simpleType", "Customer");
+        customerProperties.put("optionLabel", "id");
         
         Map<String, Object> root = new HashMap<String, Object>();
         String entityName = "SampleEntity";
         root.put("entityName", entityName);
         root.put("property", customerProperties);
-        String output = freemarkerClient.processFTL(root, "partials/includes/nToOnePropertyDetail.html.ftl");
+        String output = freemarkerClient.processFTL(root, "views/includes/nToOnePropertyDetail.html.ftl");
         Document html = Jsoup.parseBodyFragment(output);
         assertThat(output.trim(), not(equalTo("")));
         

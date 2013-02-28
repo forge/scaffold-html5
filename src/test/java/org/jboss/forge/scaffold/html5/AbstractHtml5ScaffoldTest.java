@@ -7,7 +7,7 @@ import org.junit.Before;
 public abstract class AbstractHtml5ScaffoldTest extends AbstractShellTest {
 
     protected Project project;
-
+    
     @Before
     public void setup() throws Exception {
         project = setupScaffoldProject();
@@ -24,18 +24,14 @@ public abstract class AbstractHtml5ScaffoldTest extends AbstractShellTest {
         return project;
     }
 
-    protected Project setupScaffoldProject(String targetDir) throws Exception {
-        Project project = initializeJavaProject();
-        queueInputLines("HIBERNATE", "JBOSS_AS7", "", "", "");
-        getShell().execute("persistence setup");
-        queueInputLines("", "", "");
-        getShell().execute("scaffold setup --targetDir " + targetDir);
-        return project;
-    }
-
     protected void generateScaffold() throws Exception {
         queueInputLines("", "", "", "", "");
         getShell().execute("scaffold from-entity com.test.model.*");
+    }
+    
+    protected void generateRestResources() throws Exception {
+        getShell().execute("rest setup --activatorType WEB_XML");
+        getShell().execute("rest endpoint-from-entity --contentType application/json com.test.model.*");
     }
 
 }
