@@ -79,6 +79,10 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
                 getClass().getResourceAsStream("/scaffold/angularjs/scripts/vendor/angular-resource.js"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/images/forge-logo.png"), getClass()
                 .getResourceAsStream("/scaffold/angularjs/images/forge-logo.png"), overwrite));
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/images/forge-logo.png"), getClass()
+                .getResourceAsStream("/scaffold/angularjs/images/forge-logo.png"), overwrite));
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/test/lib/angular/angular-scenario.js"),
+                getClass().getResourceAsStream("/scaffold/angularjs/test/lib/angular/angular-scenario.js"), overwrite));
         return result;
     }
 
@@ -110,6 +114,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         projectGlobalTemplates.put("scripts/app.js.ftl", "scripts/app.js");
         projectGlobalTemplates.put("scripts/services/locationParser.js.ftl", "scripts/services/locationParser.js");
         projectGlobalTemplates.put("scripts/filters/startFromFilter.js.ftl", "scripts/filters/startFromFilter.js");
+        projectGlobalTemplates.put("test/e2e/runner.html.ftl", "test/e2e/runner.html");
         
         FreemarkerClient freemarkerClient = new FreemarkerClient();
         for (String projectGlobalTemplate : projectGlobalTemplates.keySet()) {
@@ -143,6 +148,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         perEntityTemplates.put("scripts/controllers/newEntityController.js.ftl", "/scripts/controllers/new" + entity.getName() + "Controller.js");
         perEntityTemplates.put("scripts/controllers/searchEntityController.js.ftl", "/scripts/controllers/search" + entity.getName() + "Controller.js");
         perEntityTemplates.put("scripts/controllers/editEntityController.js.ftl", "/scripts/controllers/edit" + entity.getName() + "Controller.js");
+        perEntityTemplates.put("test/e2e/scenarios.js.ftl", "test/e2e/" + entity.getName() + "scenarios.js");
         
         FreemarkerClient freemarkerClient = new FreemarkerClient();
         for (String entityTemplate : perEntityTemplates.keySet()) {
