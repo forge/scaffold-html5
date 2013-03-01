@@ -1,15 +1,24 @@
 package org.jboss.forge.scaffold.html5;
 
+import javax.inject.Inject;
+
 import org.jboss.forge.project.Project;
 import org.jboss.forge.test.AbstractShellTest;
+import org.jboss.forge.test.web.DroneTest;
 import org.junit.Before;
 
 public abstract class AbstractHtml5ScaffoldTest extends AbstractShellTest {
 
     protected Project project;
     
+    protected Project current;
+    
+    @Inject
+    protected DroneTest webTest;
+    
     @Before
     public void setup() throws Exception {
+        current = getShell().getCurrentProject();
         project = setupScaffoldProject();
     }
 

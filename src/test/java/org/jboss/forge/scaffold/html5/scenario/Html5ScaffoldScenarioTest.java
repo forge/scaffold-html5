@@ -2,8 +2,18 @@ package org.jboss.forge.scaffold.html5.scenario;
 
 import static org.jboss.forge.scaffold.html5.scenario.TestHelpers.assertWebResourceContents;
 import static org.jboss.forge.scaffold.html5.scenario.TestHelpers.assertStaticFilesAreGenerated;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+
+import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.scaffold.html5.AbstractHtml5ScaffoldTest;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.CustomerViewClient;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.HasLandedOnEditCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.HasLandedOnNewCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.HasLandedOnSearchCustomerView;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
@@ -38,6 +48,8 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
 
         // Check the generated Angular services
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "single-entity");
+
+        verifyBuildWithTest(Void.class);
     }
 
     @Test
@@ -264,6 +276,30 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
     private void generateManyGroupManyUserRelation() throws Exception {
         getShell().execute("cd ../GroupIdentity.java");
         getShell().execute("field manyToMany --named users --fieldType com.test.model.UserIdentity.java");
+    }
+
+    private void verifyBuildWithTest(Class<?> klass) throws Exception {
+        assertTrue(webTest != null);
+        this.webTest.setup(project);
+        JavaClass clazz = this.webTest.from(current, CustomerViewClient.class);
+
+        this.webTest.buildDefaultDeploymentMethod(project, clazz, Arrays.asList(
+                 ".addAsResource(\"META-INF/persistence.xml\", \"META-INF/persistence.xml\")"
+                 ));
+        this.webTest.addAsTestClass(project, clazz);
+        JavaClass[] classes = new JavaClass[] { this.webTest.from(current, HasLandedOnNewCustomerView.class), this.webTest.from(current, HasLandedOnSearchCustomerView.class),
+                this.webTest.from(current, HasLandedOnEditCustomerView.class) };
+        this.webTest.addHelpers(project, classes);
+
+        try
+        {
+           getShell().execute("build -X install");
+        }
+        catch (Exception e)
+        {
+           System.err.println(getOutput());
+           throw e;
+        }
     }
 
 }
