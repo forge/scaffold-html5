@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.jboss.forge.env.Configuration;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.BaseFacet;
 import org.jboss.forge.project.facets.DependencyFacet;
@@ -22,9 +23,11 @@ import org.jboss.forge.shell.ShellPrompt;
 import org.jboss.forge.shell.plugins.Alias;
 import org.jboss.forge.shell.plugins.Help;
 import org.jboss.forge.shell.plugins.RequiresFacet;
+import org.jboss.forge.shell.project.ProjectScoped;
 import org.jboss.forge.spec.javaee.CDIFacet;
 import org.jboss.forge.spec.javaee.EJBFacet;
 import org.jboss.forge.spec.javaee.PersistenceFacet;
+import org.jboss.forge.spec.javaee.RestFacet;
 import org.metawidget.util.simple.StringUtils;
 
 /**
@@ -32,13 +35,18 @@ import org.metawidget.util.simple.StringUtils;
  */
 @Alias("html5")
 @Help("HTML5 scaffolding")
-@RequiresFacet({ WebResourceFacet.class, DependencyFacet.class, PersistenceFacet.class, EJBFacet.class, CDIFacet.class })
+@RequiresFacet({ WebResourceFacet.class, DependencyFacet.class, PersistenceFacet.class, EJBFacet.class, CDIFacet.class,
+        RestFacet.class })
 public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
 
     protected ShellPrompt prompt;
     
     @Inject
     protected IntrospectorClient introspectorClient;
+    
+    @Inject
+    @ProjectScoped
+    Configuration configuration;
 
     @Inject
     public Html5Scaffold(final ShellPrompt prompt) {
@@ -135,8 +143,16 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
         String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
         String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());
+        String resourceRootPath = configuration.getString(RestFacet.ROOTPATH);
+        if (resourceRootPath.startsWith("/")) {
+            resourceRootPath = resourceRootPath.substring(1);
+        }
+        if (resourceRootPath.endsWith("/")) {
+            resourceRootPath = resourceRootPath.substring(0, resourceRootPath.length() - 1);
+        }
         root.put("projectId", projectIdentifier);
         root.put("projectTitle", projectTitle);
+        root.put("resourceRootPath", resourceRootPath);
 
         // TODO: The list of template files to be processed per-entity (like detail.html.ftl and search.html.ftl) needs to
         // be obtained dynamically. Another list to be processed for all entities (like index.html.ftl) also needs to be

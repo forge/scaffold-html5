@@ -49,7 +49,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         // Check the generated Angular services
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "single-entity");
 
-        verifyBuildWithTest(Void.class);
+        verifyBuildWithTest(CustomerViewClient.class);
     }
 
     @Test
@@ -281,7 +281,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
     private void verifyBuildWithTest(Class<?> klass) throws Exception {
         assertTrue(webTest != null);
         this.webTest.setup(project);
-        JavaClass clazz = this.webTest.from(current, CustomerViewClient.class);
+        JavaClass clazz = this.webTest.from(current, klass);
 
         this.webTest.buildDefaultDeploymentMethod(project, clazz, Arrays.asList(
                  ".addAsResource(\"META-INF/persistence.xml\", \"META-INF/persistence.xml\")"

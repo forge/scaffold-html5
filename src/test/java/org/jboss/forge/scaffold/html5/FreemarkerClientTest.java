@@ -135,6 +135,7 @@ public class FreemarkerClientTest {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("projectId", "testProject");
         root.put("entityName", "SampleEntity");
+        root.put("resourceRootPath", "rest");
         root.put("properties", entityAttributeProperties);
         String output = freemarkerClient.processFTL(root, "scripts/services/entityFactory.js.ftl");
         assertThat(output, IsNull.notNullValue());
