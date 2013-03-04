@@ -2,17 +2,17 @@
     <div ng-show="displayError" class="alert alert-error">
         <strong>Error!</strong> Something broke. Retry, or cancel and start afresh.
     </div>
-    <div class="control-group" ng-class="{error: StoreOrderForm.firstName.$invalid}">
-        <label for="firstName" class="control-label">FirstName</label>
+    <div class="control-group" ng-class="{error: StoreOrderForm.product.$invalid}">
+        <label for="product" class="control-label">Product</label>
         <div class="controls">
-<input id="firstName" name="firstName" type="text" required ng-model="storeOrder.firstName" placeholder="Enter the StoreOrder firstName"></input>
-            <span class="help-inline" ng-show="StoreOrderForm.firstName.$error.required">required</span> 
+<input id="product" name="product" type="text" required ng-model="storeOrder.product" placeholder="Enter the StoreOrder product"></input>
+            <span class="help-inline" ng-show="StoreOrderForm.product.$error.required">required</span> 
         </div>
     </div>
-    <div class="control-group" ng-class="{error: StoreOrderForm.dateOfBirth.$invalid}">
-        <label for="dateOfBirth" class="control-label">DateOfBirth</label>
+    <div class="control-group" ng-class="{error: StoreOrderForm.orderDate.$invalid}">
+        <label for="orderDate" class="control-label">OrderDate</label>
         <div class="controls">
-<input id="dateOfBirth" name="dateOfBirth" type="date" ng-model="storeOrder.dateOfBirth" placeholder="Enter the StoreOrder dateOfBirth"></input>
+<input id="orderDate" name="orderDate" type="date" ng-model="storeOrder.orderDate" placeholder="Enter the StoreOrder orderDate"></input>
         </div>
     </div>
     <div class="control-group" ng-class="{error: StoreOrderForm.customer.$invalid}">

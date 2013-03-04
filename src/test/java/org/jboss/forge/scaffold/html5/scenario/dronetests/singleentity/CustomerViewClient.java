@@ -1,4 +1,4 @@
-package org.jboss.forge.scaffold.html5.scenario.dronetests;
+package org.jboss.forge.scaffold.html5.scenario.dronetests.singleentity;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,9 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.drone.api.annotation.Drone;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchCustomerView;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;

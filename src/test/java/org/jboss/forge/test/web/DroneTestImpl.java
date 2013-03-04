@@ -67,7 +67,7 @@ public class DroneTestImpl implements DroneTest
 
       DependencyFacet deps = project.getFacet(DependencyFacet.class);
       deps.addDirectManagedDependency(
-               DependencyBuilder.create("org.jboss.arquillian:arquillian-bom:1.0.0.Final")
+               DependencyBuilder.create("org.jboss.arquillian:arquillian-bom:1.0.1.Final")
                         .setPackagingType(PackagingType.BASIC).setScopeType(ScopeType.IMPORT));
       deps.addDirectManagedDependency(
               DependencyBuilder.create("org.jboss.arquillian.extension:arquillian-drone-bom:1.2.0.Alpha1")
@@ -83,12 +83,12 @@ public class DroneTestImpl implements DroneTest
                .setId("JBOSS_AS_MANAGED_7_1")
                .setActiveByDefault(true)
                .addDependency(
-                        DependencyBuilder.create("org.jboss.arquillian.junit:arquillian-junit-container"))
+                        DependencyBuilder.create("org.jboss.arquillian.junit:arquillian-junit-container").setScopeType(ScopeType.TEST))
                .addDependency(
-                        DependencyBuilder.create("org.jboss.arquillian.protocol:arquillian-protocol-servlet"))
-               .addDependency(DependencyBuilder.create("junit:junit:4.10"))
-               .addDependency(DependencyBuilder.create("org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl:1.1.0-beta-1"))
-               .addDependency(DependencyBuilder.create("org.jboss.as:jboss-as-arquillian-container-managed:7.1.1.Final"))
+                        DependencyBuilder.create("org.jboss.arquillian.protocol:arquillian-protocol-servlet").setScopeType(ScopeType.TEST))
+               .addDependency(DependencyBuilder.create("junit:junit:4.11").setScopeType(ScopeType.TEST))
+               .addDependency(DependencyBuilder.create("org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl:1.1.0-beta-1").setScopeType(ScopeType.TEST))
+               .addDependency(DependencyBuilder.create("org.jboss.as:jboss-as-arquillian-container-managed:7.1.1.Final").setScopeType(ScopeType.TEST))
                .addDependency(DependencyBuilder.create("org.jboss.arquillian.extension:arquillian-drone-webdriver-depchain:1.1.0.Final")
                                 .setPackagingType(PackagingType.BASIC).setScopeType(ScopeType.TEST));
 
@@ -196,8 +196,10 @@ public class DroneTestImpl implements DroneTest
          if (method == null)
             method = clazz.addMethod("public static WebArchive getDeployment() {}");
 
-         if (!method.hasAnnotation(Deployment.class))
-            method.addAnnotation(Deployment.class);
+         if (!method.hasAnnotation(Deployment.class)) {
+            Annotation<JavaClass> deployment = method.addAnnotation(Deployment.class);
+            deployment.setLiteralValue("testable", "false");
+        }
 
          clazz.addImport(ExplodedImporter.class);
          clazz.addImport(JavaArchive.class);

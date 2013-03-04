@@ -4,15 +4,21 @@ import static org.jboss.forge.scaffold.html5.scenario.TestHelpers.assertWebResou
 import static org.jboss.forge.scaffold.html5.scenario.TestHelpers.assertStaticFilesAreGenerated;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.scaffold.html5.AbstractHtml5ScaffoldTest;
-import org.jboss.forge.scaffold.html5.scenario.dronetests.CustomerViewClient;
-import org.jboss.forge.scaffold.html5.scenario.dronetests.HasLandedOnEditCustomerView;
-import org.jboss.forge.scaffold.html5.scenario.dronetests.HasLandedOnNewCustomerView;
-import org.jboss.forge.scaffold.html5.scenario.dronetests.HasLandedOnSearchCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.manytoone.CustomerAndStoreOrderViewsClient;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.singleentity.CustomerViewClient;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditStoreOrderView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewStoreOrderView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchStoreOrderView;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -49,7 +55,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         // Check the generated Angular services
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "single-entity");
 
-        verifyBuildWithTest(CustomerViewClient.class);
+        verifyBuildWithTest(CustomerViewClient.class, new Class<?>[]{HasLandedOnNewCustomerView.class,HasLandedOnEditCustomerView.class,HasLandedOnSearchCustomerView.class});
     }
 
     @Test
@@ -92,6 +98,10 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         // Check the generated Angular services
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "many-to-one");
         assertWebResourceContents(web, "/scripts/services/StoreOrderFactory.js", "many-to-one");
+        
+        verifyBuildWithTest(CustomerAndStoreOrderViewsClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
+                HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class, HasLandedOnNewStoreOrderView.class,
+                HasLandedOnEditStoreOrderView.class, HasLandedOnSearchStoreOrderView.class });
     }
 
     @Test
@@ -231,9 +241,9 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
     private void generateStoreOrderEntity() throws Exception {
         queueInputLines("");
         getShell().execute("entity --named StoreOrder");
-        getShell().execute("field string --named firstName");
-        getShell().execute("field temporal --type DATE --named dateOfBirth");
-        getShell().execute("constraint NotNull --onProperty firstName");
+        getShell().execute("field string --named product");
+        getShell().execute("field temporal --type DATE --named orderDate");
+        getShell().execute("constraint NotNull --onProperty product");
     }
 
     private void generateAddressEntity() throws Exception {
@@ -278,18 +288,21 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         getShell().execute("field manyToMany --named users --fieldType com.test.model.UserIdentity.java");
     }
 
-    private void verifyBuildWithTest(Class<?> klass) throws Exception {
+    private void verifyBuildWithTest(Class<?> testClass, Class<?>[] helpers) throws Exception {
         assertTrue(webTest != null);
         this.webTest.setup(project);
-        JavaClass clazz = this.webTest.from(current, klass);
+        JavaClass clazz = this.webTest.from(current, testClass);
 
         this.webTest.buildDefaultDeploymentMethod(project, clazz, Arrays.asList(
                  ".addAsResource(\"META-INF/persistence.xml\", \"META-INF/persistence.xml\")"
                  ));
         this.webTest.addAsTestClass(project, clazz);
-        JavaClass[] classes = new JavaClass[] { this.webTest.from(current, HasLandedOnNewCustomerView.class), this.webTest.from(current, HasLandedOnSearchCustomerView.class),
-                this.webTest.from(current, HasLandedOnEditCustomerView.class) };
-        this.webTest.addHelpers(project, classes);
+        List<JavaClass> classes = new ArrayList<JavaClass>();
+        for(Class<?> helper: helpers) {
+            JavaClass helperClass = this.webTest.from(current, helper);
+            classes.add(helperClass);
+        }
+        this.webTest.addHelpers(project, classes.toArray(new JavaClass[0]));
 
         try
         {

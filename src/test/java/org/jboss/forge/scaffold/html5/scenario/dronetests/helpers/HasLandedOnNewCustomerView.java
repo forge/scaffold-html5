@@ -1,4 +1,4 @@
-package org.jboss.forge.scaffold.html5.scenario.dronetests;
+package org.jboss.forge.scaffold.html5.scenario.dronetests.helpers;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
