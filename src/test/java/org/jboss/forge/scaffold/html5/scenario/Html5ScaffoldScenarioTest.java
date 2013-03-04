@@ -12,11 +12,15 @@ import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.scaffold.html5.AbstractHtml5ScaffoldTest;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.manytoone.CustomerAndStoreOrderViewsClient;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.onetoone.CustomerAndAddressViewsClient;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.singleentity.CustomerViewClient;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditAddressView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditCustomerView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditStoreOrderView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewAddressView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewCustomerView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewStoreOrderView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchAddressView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchCustomerView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchStoreOrderView;
 import org.junit.Assert;
@@ -144,6 +148,10 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         // Check the generated Angular services
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "one-to-one");
         assertWebResourceContents(web, "/scripts/services/AddressFactory.js", "one-to-one");
+        
+        verifyBuildWithTest(CustomerAndAddressViewsClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
+            HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class, HasLandedOnNewAddressView.class,
+            HasLandedOnEditAddressView.class, HasLandedOnSearchAddressView.class });
     }
 
     @Test
