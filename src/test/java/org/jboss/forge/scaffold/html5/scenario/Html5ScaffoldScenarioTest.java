@@ -11,7 +11,8 @@ import java.util.List;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.scaffold.html5.AbstractHtml5ScaffoldTest;
-import org.jboss.forge.scaffold.html5.scenario.dronetests.manytoone.CustomerAndStoreOrderViewsClient;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.manytoone.ManyStoreOrderAndOneCustomerViewsClient;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.onetomany.OneCustomerAndManyStoreOrderViewsClient;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.onetoone.CustomerAndAddressViewsClient;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.singleentity.CustomerViewClient;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditAddressView;
@@ -59,7 +60,8 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         // Check the generated Angular services
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "single-entity");
 
-        verifyBuildWithTest(CustomerViewClient.class, new Class<?>[]{HasLandedOnNewCustomerView.class,HasLandedOnEditCustomerView.class,HasLandedOnSearchCustomerView.class});
+        verifyBuildWithTest(CustomerViewClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
+                HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class });
     }
 
     @Test
@@ -103,7 +105,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "many-to-one");
         assertWebResourceContents(web, "/scripts/services/StoreOrderFactory.js", "many-to-one");
         
-        verifyBuildWithTest(CustomerAndStoreOrderViewsClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
+        verifyBuildWithTest(ManyStoreOrderAndOneCustomerViewsClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
                 HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class, HasLandedOnNewStoreOrderView.class,
                 HasLandedOnEditStoreOrderView.class, HasLandedOnSearchStoreOrderView.class });
     }
@@ -194,6 +196,10 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         // Check the generated Angular services
         assertWebResourceContents(web, "/scripts/services/CustomerFactory.js", "one-to-many");
         assertWebResourceContents(web, "/scripts/services/StoreOrderFactory.js", "one-to-many");
+        
+        verifyBuildWithTest(OneCustomerAndManyStoreOrderViewsClient.class, new Class<?>[] { HasLandedOnNewCustomerView.class,
+            HasLandedOnEditCustomerView.class, HasLandedOnSearchCustomerView.class, HasLandedOnNewStoreOrderView.class,
+            HasLandedOnEditStoreOrderView.class, HasLandedOnSearchStoreOrderView.class });
     }
 
     @Test
@@ -278,7 +284,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
 
     private void generateOneCustomerManyStoreOrderRelation() throws Exception {
         getShell().execute("cd ../Customer.java");
-        getShell().execute("field oneToMany --named orders --fieldType com.test.model.StoreOrder.java");
+        getShell().execute("field oneToMany --named orders --fieldType com.test.model.StoreOrder.java --fetchType EAGER");
     }
 
     private void generateOneCustomerOneAddressRelation() throws Exception {
@@ -293,7 +299,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
 
     private void generateManyGroupManyUserRelation() throws Exception {
         getShell().execute("cd ../GroupIdentity.java");
-        getShell().execute("field manyToMany --named users --fieldType com.test.model.UserIdentity.java");
+        getShell().execute("field manyToMany --named users --fieldType com.test.model.UserIdentity.java --fetchType EAGER");
     }
 
     private void verifyBuildWithTest(Class<?> testClass, Class<?>[] helpers) throws Exception {

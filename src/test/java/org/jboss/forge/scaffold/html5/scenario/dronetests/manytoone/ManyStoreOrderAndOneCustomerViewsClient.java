@@ -30,7 +30,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 @Ignore
 @RunWith(Arquillian.class)
 @RunAsClient
-public class CustomerAndStoreOrderViewsClient {
+public class ManyStoreOrderAndOneCustomerViewsClient {
 
     @Drone
     WebDriver driver;

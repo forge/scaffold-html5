@@ -12,7 +12,7 @@
                 </select> 
                 <button class="btn btn-mini btn-danger" ng-click="remove${property.name}($index)">-</button>
             </div>
-            <button class="btn btn-mini" ng-click="add${property.name}()">+</button>
+            <button id="add${property.name}" class="btn btn-mini" ng-click="add${property.name}()">+</button>
         </div>
     </div>
 </#if>
