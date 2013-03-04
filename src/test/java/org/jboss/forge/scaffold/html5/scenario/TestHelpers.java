@@ -11,7 +11,7 @@ import org.junit.Assert;
 
 public class TestHelpers {
 
-    private static final String SCENARIO_OUTPUTS = "scenario-outputs/";
+    private static final String SCENARIO_OUTPUTS = "expected-scenario-outputs/";
 
     public static void assertStaticFilesAreGenerated(WebResourceFacet web) {
         assertStaticJSAssetsAreGenerated(web);

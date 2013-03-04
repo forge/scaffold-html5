@@ -11,19 +11,26 @@ import java.util.List;
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.scaffold.html5.AbstractHtml5ScaffoldTest;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.manytomany.ManyUserAndManyGroupViewsClient;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.manytoone.ManyStoreOrderAndOneCustomerViewsClient;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.onetomany.OneCustomerAndManyStoreOrderViewsClient;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.onetoone.CustomerAndAddressViewsClient;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.singleentity.CustomerViewClient;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditAddressView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditGroupIdentityView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditStoreOrderView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnEditUserIdentityView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewAddressView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewGroupIdentityView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewStoreOrderView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnNewUserIdentityView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchAddressView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchCustomerView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchGroupIdentityView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchStoreOrderView;
+import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchUserIdentityView;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -242,6 +249,10 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
         // Check the generated Angular services
         assertWebResourceContents(web, "/scripts/services/GroupIdentityFactory.js", "many-to-many");
         assertWebResourceContents(web, "/scripts/services/UserIdentityFactory.js", "many-to-many");
+        
+        verifyBuildWithTest(ManyUserAndManyGroupViewsClient.class, new Class<?>[] { HasLandedOnNewUserIdentityView.class,
+            HasLandedOnEditUserIdentityView.class, HasLandedOnSearchUserIdentityView.class, HasLandedOnNewGroupIdentityView.class,
+            HasLandedOnEditGroupIdentityView.class, HasLandedOnSearchGroupIdentityView.class });
     }
 
     private void generateCustomerEntity() throws Exception {
