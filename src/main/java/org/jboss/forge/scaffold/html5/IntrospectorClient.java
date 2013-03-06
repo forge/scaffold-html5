@@ -100,15 +100,21 @@ public class IntrospectorClient {
         Element inspectedProperty = XmlUtils.getFirstChildElement(inspectedEntity);
         while (inspectedProperty != null) {
             Map<String, String> propertyAttributes = XmlUtils.getAttributesAsMap(inspectedProperty);
-            String hidden = propertyAttributes.get("hidden");
-            String required = propertyAttributes.get("required");
-            boolean isHidden = Boolean.parseBoolean(hidden);
-            boolean isRequired = Boolean.parseBoolean(required);
-            if (!isHidden) {
-                displayableProperties.add(propertyAttributes.get("name"));
-            } else if (isRequired) {
-                // Do nothing if hidden, unless required
-                displayableProperties.add(propertyAttributes.get("name"));
+            boolean isManyToOneRel = Boolean.parseBoolean(propertyAttributes.get("many-to-one"));
+            boolean isOneToOneRel = Boolean.parseBoolean(propertyAttributes.get("one-to-one"));
+            boolean isNToManyRel = Boolean.parseBoolean(propertyAttributes.get("n-to-many"));
+            if (!isManyToOneRel && !isNToManyRel && !isOneToOneRel) {
+                // Display only basic properties
+                String hidden = propertyAttributes.get("hidden");
+                String required = propertyAttributes.get("required");
+                boolean isHidden = Boolean.parseBoolean(hidden);
+                boolean isRequired = Boolean.parseBoolean(required);
+                if (!isHidden) {
+                    displayableProperties.add(propertyAttributes.get("name"));
+                } else if (isRequired) {
+                    // Do nothing if hidden, unless required
+                    displayableProperties.add(propertyAttributes.get("name"));
+                }
             }
             inspectedProperty = XmlUtils.getNextSiblingElement(inspectedProperty);
         }
