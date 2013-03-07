@@ -144,6 +144,10 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
         String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());
         String resourceRootPath = configuration.getString(RestFacet.ROOTPATH);
+        if (resourceRootPath == null) {
+            throw new RuntimeException(
+                    "This project does not have a rootpath for REST resources. You may need to run \"rest setup\" in Forge.");
+        }
         if (resourceRootPath.startsWith("/")) {
             resourceRootPath = resourceRootPath.substring(1);
         }
