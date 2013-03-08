@@ -100,7 +100,32 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         assertThat(formInputElement.attr("id"), equalTo("fullName"));
         assertThat(formInputElement.attr("type"), equalTo("text"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase("SampleEntity")+"."+"fullName"));
-        assertThat(formInputElement.attr("maxlength"), equalTo("100"));
+        assertThat(formInputElement.attr("ng-maxlength"), equalTo("100"));
+    }
+    
+    @Test
+    public void testGenerateBasicStringPropertyWithMinlength() throws Exception {
+        Map<String, String> nameProperties = new HashMap<String, String>();
+        nameProperties.put("name", "fullName");
+        nameProperties.put("type", "java.lang.String");
+        nameProperties.put("minimum-length", "5");
+        
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("entityName", "SampleEntity");
+        root.put("property", nameProperties);
+        String output = freemarkerClient.processFTL(root, "views/includes/basicPropertyDetail.html.ftl");
+        Document html = Jsoup.parseBodyFragment(output);
+        assertThat(output.trim(), not(equalTo("")));
+        
+        Elements container = html.select("div.control-group");
+        assertThat(container, notNullValue());
+        assertThat(container.attr("ng-class"), not(equalTo("")));
+        
+        Elements formInputElement = html.select("div.control-group input");
+        assertThat(formInputElement.attr("id"), equalTo("fullName"));
+        assertThat(formInputElement.attr("type"), equalTo("text"));
+        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase("SampleEntity")+"."+"fullName"));
+        assertThat(formInputElement.attr("ng-minlength"), equalTo("5"));
     }
     
     @Test
