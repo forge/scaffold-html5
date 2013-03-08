@@ -13,9 +13,6 @@ public abstract class AbstractHtml5ScaffoldTest extends AbstractShellTest {
     
     protected Project current;
     
-    @Inject
-    protected DroneTest webTest;
-    
     @Before
     public void setup() throws Exception {
         current = getShell().getCurrentProject();

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.jboss.forge.parser.java.JavaClass;
 import org.jboss.forge.project.facets.WebResourceFacet;
 import org.jboss.forge.scaffold.html5.AbstractHtml5ScaffoldTest;
@@ -31,11 +33,15 @@ import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSea
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchGroupIdentityView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchStoreOrderView;
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchUserIdentityView;
+import org.jboss.forge.test.web.DroneTest;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
 
+    @Inject
+    protected DroneTest webTest;
+    
     @Test
     public void testScaffoldForSingleEntity() throws Exception {
         generateCustomerEntity();

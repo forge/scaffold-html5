@@ -140,7 +140,10 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         
-        Map<String, Object> root = introspectorClient.inspect(entity);
+        List<Map<String, String>> inspectionResults = introspectorClient.inspect(entity);
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("entityName", entity.getName());
+        root.put("properties", inspectionResults);
         MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
         String projectIdentifier = StringUtils.camelCase(metadata.getProjectName());
         String projectTitle = StringUtils.uncamelCase(metadata.getProjectName());

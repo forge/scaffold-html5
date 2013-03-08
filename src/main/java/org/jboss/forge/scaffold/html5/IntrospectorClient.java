@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -28,31 +29,33 @@ import org.w3c.dom.Element;
 
 public class IntrospectorClient {
 
-    @Inject
     private Project project;
     
-    @Inject
     private ShellPrompt prompt;
+    
+    @Inject
+    public IntrospectorClient(Project project, ShellPrompt prompt) {
+        this.project = project;
+        this.prompt = prompt;
+    }
 
     @Inject
     RelatedTypeHolder relatedClassHolder;
 
-    public Map<String, Object> inspect(JavaClass entity) {
-        Map<String, Object> root = new HashMap<String, Object>();
+    public List<Map<String, String>> inspect(JavaClass entity) {
         // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
         // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
-        root.put("entityName", entity.getName());
 
         Element inspectionResult = inspectEntity(entity);
         Element inspectedEntity = XmlUtils.getFirstChildElement(inspectionResult);
         System.out.println(XmlUtils.nodeToString(inspectedEntity, true));
 
         Element inspectedProperty = XmlUtils.getFirstChildElement(inspectedEntity);
-        List<Map<String, String>> viewPropertyAttributes = new ArrayList<Map<String, String>>();
+        List<Map<String, String>> viewPropertyAttributes = new ArrayList<Map<String,String>>();
         while (inspectedProperty != null) {
             System.out.println(XmlUtils.nodeToString(inspectedProperty, true));
             Map<String, String> propertyAttributes = XmlUtils.getAttributesAsMap(inspectedProperty);
-
+            
             // Canonicalize all numerical types in Java to "number" for HTML5 form input type support
             String propertyType = propertyAttributes.get("type");
             if (propertyType.equals(short.class.getName()) || propertyType.equals(int.class.getName())
@@ -86,9 +89,7 @@ public class IntrospectorClient {
             viewPropertyAttributes.add(propertyAttributes);
             inspectedProperty = XmlUtils.getNextSiblingElement(inspectedProperty);
         }
-        root.put("properties", viewPropertyAttributes);
-        System.out.println("Root:" + root);
-        return root;
+        return viewPropertyAttributes;
     }
 
     // TODO; Extract this method into it's own class, for unit testing.
