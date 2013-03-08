@@ -53,6 +53,10 @@ public class TestHelpers {
         Assert.assertTrue(startFromFilter.exists());
         String startFromFilterContents = Streams.toString(startFromFilter.getResourceInputStream());
         Assert.assertThat(startFromFilterContents, StringContains.containsString("angular.module('test')"));
+        FileResource<?> genericSearchFilter = web.getWebResource("/scripts/filters/genericSearchFilter.js");
+        Assert.assertTrue(genericSearchFilter.exists());
+        String genericSearchFilterContents = Streams.toString(startFromFilter.getResourceInputStream());
+        Assert.assertThat(genericSearchFilterContents, StringContains.containsString("angular.module('test')"));
 
         // Services
         FileResource<?> locationParser = web.getWebResource("/scripts/services/locationParser.js");

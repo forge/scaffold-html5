@@ -42,7 +42,7 @@ angular.module('${angularApp}').controller('${angularController}', function($sco
     </#list>
 
     $scope.performSearch = function() {
-        $scope.searchResults = CustomerResource.queryAll(function(){
+        $scope.searchResults = ${angularResource}.queryAll(function(){
             $scope.numberOfPages();
         });
     };

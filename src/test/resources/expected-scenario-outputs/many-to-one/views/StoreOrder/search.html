@@ -37,7 +37,7 @@
         </tr>
     </thead>
     <tbody id="search-results-body">
-        <tr ng-repeat="result in searchResults | filter:filterSearchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+        <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
             <td><a href="#/StoreOrders/edit/{{result.id}}">{{result.product}}</a></td>
             <td><a href="#/StoreOrders/edit/{{result.id}}">{{result.orderDate}}</a></td>
             <td><a href="#/StoreOrders/edit/{{result.id}}">{{result.customer.id}}</a></td>

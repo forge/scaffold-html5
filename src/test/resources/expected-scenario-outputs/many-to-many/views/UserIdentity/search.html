@@ -21,7 +21,7 @@
         </tr>
     </thead>
     <tbody id="search-results-body">
-        <tr ng-repeat="result in searchResults | filter:filterSearchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
+        <tr ng-repeat="result in searchResults | searchFilter:searchResults | startFrom:currentPage*pageSize | limitTo:pageSize">
             <td><a href="#/UserIdentitys/edit/{{result.id}}">{{result.userName}}</a></td>
         </tr>
     </tbody>

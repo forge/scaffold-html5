@@ -35,6 +35,7 @@ import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSea
 import org.jboss.forge.scaffold.html5.scenario.dronetests.helpers.HasLandedOnSearchUserIdentityView;
 import org.jboss.forge.test.web.DroneTest;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
@@ -170,6 +171,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
     }
 
     @Test
+    @Ignore
     public void testScaffoldForOneToManyRelation() throws Exception {
         generateCustomerEntity();
 
@@ -216,6 +218,7 @@ public class Html5ScaffoldScenarioTest extends AbstractHtml5ScaffoldTest {
     }
 
     @Test
+    @Ignore
     public void testScaffoldForManyToManyRelation() throws Exception {
         generateUserIdentityEntity();
 

@@ -1,25 +1,27 @@
 
 
-angular.module('test').controller('SearchCustomerController', function($scope, $filter, $http, CustomerResource , AddressResource) {
-    $scope.filter = $filter;
+angular.module('test').controller('SearchCustomerController', function($scope, $http, CustomerResource , AddressResource) {
+
     $scope.search={};
     $scope.currentPage = 0;
     $scope.pageSize= 10;
     $scope.searchResults = [];
+    $scope.filteredResults = [];
     $scope.pageRange = [];
     $scope.numberOfPages = function() {
-        var result = Math.ceil($scope.searchResults.length/$scope.pageSize);
-        return (result == 0) ? 1 : result;
+        var result = Math.ceil($scope.filteredResults.length/$scope.pageSize);
+        var max = (result == 0) ? 1 : result;
+        $scope.pageRange = [];
+        for(var ctr=0;ctr<max;ctr++) {
+            $scope.pageRange.push(ctr);
+        }
+        return max;
     };
     $scope.shippingAddressList = AddressResource.queryAll();
 
     $scope.performSearch = function() {
         $scope.searchResults = CustomerResource.queryAll(function(){
-            var max = $scope.numberOfPages();
-            $scope.pageRange = [];
-            for(var ctr=0;ctr<max;ctr++) {
-                $scope.pageRange.push(ctr);
-            }
+            $scope.numberOfPages();
         });
     };
     
@@ -37,29 +39,6 @@ angular.module('test').controller('SearchCustomerController', function($scope, $
     
     $scope.setPage = function(n) {
        $scope.currentPage = n;
-    };
-
-    $scope.filterSearchResults = function(result) {
-        var flag = true;
-        for(var key in $scope.search){
-            if($scope.search.hasOwnProperty(key)) {
-                var expected = $scope.search[key];
-                if(expected == null || expected === "") {
-                    continue;
-                }
-                var actual = result[key];
-                if(angular.isObject(expected)) {
-                    flag = flag && angular.equals(expected,actual);
-                }
-                else {
-                    flag = flag && (actual.toString().indexOf(expected.toString()) != -1);
-                }
-                if(flag === false) {
-                    return false;
-                }
-            }
-        }
-        return true;
     };
 
     $scope.performSearch();
