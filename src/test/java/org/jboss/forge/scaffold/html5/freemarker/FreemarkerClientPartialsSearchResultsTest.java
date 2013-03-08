@@ -1,4 +1,4 @@
-package org.jboss.forge.scaffold.html5;
+package org.jboss.forge.scaffold.html5.freemarker;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.forge.scaffold.html5.FreemarkerClient;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;

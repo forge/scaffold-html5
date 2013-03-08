@@ -1,4 +1,4 @@
-package org.jboss.forge.scaffold.html5;
+package org.jboss.forge.scaffold.html5.freemarker;
 
 import static org.junit.Assert.*;
 
@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hamcrest.core.IsEqual;
+import org.jboss.forge.scaffold.html5.FreemarkerClient;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

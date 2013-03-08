@@ -20,7 +20,7 @@ public class FreemarkerClient {
         config.setObjectWrapper(new DefaultObjectWrapper());
     }
 
-    protected String processFTL(Map<String, Object> root, String inputPath) {
+    public String processFTL(Map<String, Object> root, String inputPath) {
         try {
             Template templateFile = config.getTemplate(inputPath);
             Writer out = new StringWriter();
