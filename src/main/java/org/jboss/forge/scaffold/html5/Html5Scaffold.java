@@ -121,6 +121,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         projectGlobalTemplates.put("index.html.ftl", "index.html");
         projectGlobalTemplates.put("scripts/app.js.ftl", "scripts/app.js");
         projectGlobalTemplates.put("scripts/services/locationParser.js.ftl", "scripts/services/locationParser.js");
+        projectGlobalTemplates.put("scripts/filters/genericSearchFilter.js.ftl", "scripts/filters/genericSearchFilter.js");
         projectGlobalTemplates.put("scripts/filters/startFromFilter.js.ftl", "scripts/filters/startFromFilter.js");
         projectGlobalTemplates.put("test/e2e/runner.html.ftl", "test/e2e/runner.html");
         
