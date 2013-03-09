@@ -2,11 +2,8 @@ package org.jboss.forge.scaffold.html5;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-
 import javax.inject.Inject;
 
 import org.jboss.forge.parser.java.JavaClass;
@@ -39,13 +36,7 @@ public class IntrospectorClient {
         this.prompt = prompt;
     }
 
-    @Inject
-    RelatedTypeHolder relatedClassHolder;
-
     public List<Map<String, String>> inspect(JavaClass entity) {
-        // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
-        // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
-
         Element inspectionResult = inspectEntity(entity);
         Element inspectedEntity = XmlUtils.getFirstChildElement(inspectionResult);
         System.out.println(XmlUtils.nodeToString(inspectedEntity, true));

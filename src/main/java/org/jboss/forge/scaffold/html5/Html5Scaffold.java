@@ -142,6 +142,8 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
         
         List<Map<String, String>> inspectionResults = introspectorClient.inspect(entity);
         Map<String, Object> root = new HashMap<String, Object>();
+        // TODO: Provide a 'utility' class for allowing transliteration across language naming schemes
+        // We need this to use contextual naming schemes instead of performing toLowerCase etc. in FTLs.
         root.put("entityName", entity.getName());
         root.put("properties", inspectionResults);
         MetadataFacet metadata = this.project.getFacet(MetadataFacet.class);
