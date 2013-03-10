@@ -240,11 +240,169 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
         assertThat(inspectionResult, hasItemWithEntry("minimum-value", "0"));
         assertThat(inspectionResult, hasItemWithEntry("maximum-value", "100"));
     }
+    
+    @Test
+    public void testInspectOneToOneField() throws Exception {
+        String entityName = "Customer";
+        String fieldName = "address";
+        String relatedEntityName = "CustomerAddress";
+        generateSimpleEntity(relatedEntityName);
+        String relatedEntityType = getJavaClassNameFor(relatedEntityName);
+        generateSimpleEntity(entityName);
+        generateOneToOneField(fieldName, relatedEntityType, null);
+
+        JavaClass klass = getJavaClassFor(entityName);
+        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+
+        assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+        assertThat(inspectionResult, hasItemWithEntry("one-to-one", "true"));
+        assertThat(inspectionResult, hasItemWithEntry("type", relatedEntityType));
+    }
+    
+    @Test
+    public void testInspectManyToOneField() throws Exception {
+        String entityName = "Customer";
+        String fieldName = "category";
+        String relatedEntityName = "CustomCategory";
+        generateSimpleEntity(relatedEntityName);
+        String relatedEntityType = getJavaClassNameFor(relatedEntityName);
+        generateSimpleEntity(entityName);
+        generateManyToOneField(fieldName, relatedEntityType, null);
+
+        JavaClass klass = getJavaClassFor(entityName);
+        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+
+        assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+        assertThat(inspectionResult, hasItemWithEntry("many-to-one", "true"));
+        assertThat(inspectionResult, hasItemWithEntry("type", relatedEntityType));
+    }
+
+    @Test
+    public void testInspectOneToManyField() throws Exception {
+        String entityName = "Customer";
+        String fieldName = "orders";
+        String relatedEntityName = "StoreOrder";
+        generateSimpleEntity(relatedEntityName);
+        String relatedEntityType = getJavaClassNameFor(relatedEntityName);
+        generateSimpleEntity(entityName);
+        generateOneToManyField(fieldName, relatedEntityType, null);
+
+        JavaClass klass = getJavaClassFor(entityName);
+        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+
+        assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+        assertThat(inspectionResult, hasItemWithEntry("n-to-many", "true"));
+        assertThat(inspectionResult, hasItemWithEntry("type", "java.util.Set"));
+        assertThat(inspectionResult, hasItemWithEntry("parameterized-type", relatedEntityType));
+    }
+    
+    @Test
+    public void testInspectManyToManyField() throws Exception {
+        String entityName = "Customer";
+        String fieldName = "visitedStores";
+        String relatedEntityName = "Store";
+        generateSimpleEntity(relatedEntityName);
+        String relatedEntityType = getJavaClassNameFor(relatedEntityName);
+        generateSimpleEntity(entityName);
+        generateManyToManyField(fieldName, relatedEntityType, null);
+
+        JavaClass klass = getJavaClassFor(entityName);
+        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+
+        assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+        assertThat(inspectionResult, hasItemWithEntry("n-to-many", "true"));
+        assertThat(inspectionResult, hasItemWithEntry("type", "java.util.Set"));
+        assertThat(inspectionResult, hasItemWithEntry("parameterized-type", relatedEntityType));
+    }
+    
+    @Test
+    public void testInspectBidiOneToOneField() throws Exception {
+        String entityName = "Customer";
+        String fieldName = "address";
+        String relatedEntityName = "CustomerAddress";
+        generateSimpleEntity(relatedEntityName);
+        String relatedEntityType = getJavaClassNameFor(relatedEntityName);
+        generateSimpleEntity(entityName);
+        generateOneToOneField(fieldName, relatedEntityType, "customer");
+
+        JavaClass klass = getJavaClassFor(entityName);
+        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+
+        assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+        assertThat(inspectionResult, hasItemWithEntry("one-to-one", "true"));
+        assertThat(inspectionResult, hasItemWithEntry("type", relatedEntityType));
+    }
+    
+    @Test
+    public void testInspectBidiManyToOneField() throws Exception {
+        String entityName = "Customer";
+        String fieldName = "category";
+        String relatedEntityName = "CustomCategory";
+        generateSimpleEntity(relatedEntityName);
+        String relatedEntityType = getJavaClassNameFor(relatedEntityName);
+        generateSimpleEntity(entityName);
+        generateManyToOneField(fieldName, relatedEntityType, "customer");
+
+        JavaClass klass = getJavaClassFor(entityName);
+        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+
+        assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+        assertThat(inspectionResult, hasItemWithEntry("many-to-one", "true"));
+        assertThat(inspectionResult, hasItemWithEntry("type", relatedEntityType));
+    }
+
+    @Test
+    public void testInspectBidiOneToManyField() throws Exception {
+        String entityName = "Customer";
+        String fieldName = "orders";
+        String relatedEntityName = "StoreOrder";
+        String inverseFieldName = "customer";
+        generateSimpleEntity(relatedEntityName);
+        String relatedEntityType = getJavaClassNameFor(relatedEntityName);
+        generateSimpleEntity(entityName);
+        generateOneToManyField(fieldName, relatedEntityType, inverseFieldName);
+
+        JavaClass klass = getJavaClassFor(entityName);
+        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+
+        assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+        assertThat(inspectionResult, hasItemWithEntry("n-to-many", "true"));
+        assertThat(inspectionResult, hasItemWithEntry("type", "java.util.Set"));
+        assertThat(inspectionResult, hasItemWithEntry("parameterized-type", relatedEntityType));
+        assertThat(inspectionResult, hasItemWithEntry("inverse-relationship", inverseFieldName));
+    }
+    
+    @Test
+    public void testInspectBidiManyToManyField() throws Exception {
+        String entityName = "Customer";
+        String fieldName = "visitedStores";
+        String relatedEntityName = "Store";
+        String inverseFieldName = "customer";
+        generateSimpleEntity(relatedEntityName);
+        String relatedEntityType = getJavaClassNameFor(relatedEntityName);
+        generateSimpleEntity(entityName);
+        generateManyToManyField(fieldName, relatedEntityType, inverseFieldName);
+
+        JavaClass klass = getJavaClassFor(entityName);
+        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+
+        assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+        assertThat(inspectionResult, hasItemWithEntry("n-to-many", "true"));
+        assertThat(inspectionResult, hasItemWithEntry("type", "java.util.Set"));
+        assertThat(inspectionResult, hasItemWithEntry("parameterized-type", relatedEntityType));
+        // TODO: The inverse-relatioship is not available for ManyToMany bidi relations. Investigate. 
+        //assertThat(inspectionResult, hasItemWithEntry("inverse-relationship", inverseFieldName));
+    }
 
     private JavaClass getJavaClassFor(String entityName) throws FileNotFoundException {
         JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
         JavaClass klass = (JavaClass) java.getJavaResource(java.getBasePackage() + ".model." + entityName).getJavaSource();
         return klass;
+    }
+    
+    private String getJavaClassNameFor(String entityName) throws FileNotFoundException {
+        JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
+        return java.getBasePackage() + ".model." + entityName;
     }
 
     private void generateSimpleEntity(String entityName) throws Exception {
@@ -261,11 +419,47 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
     }
 
     private void generateNumericField(String fieldName, String type) throws Exception {
-        getShell().execute("field " + type + " --named " + fieldName);
+        if (type.equals("int") || type.equals("long")) {
+            getShell().execute("field " + type + " --named " + fieldName);
+        } else {
+            throw new RuntimeException("Incorrect field type provided as input");
+        }
     }
 
     private void generateNumericField(String fieldName, Class<? extends Number> klass) throws Exception {
         getShell().execute("field number --named " + fieldName + " --type " + klass.getName().toString());
+    }
+    
+    private void generateOneToOneField(String fieldName, String type, String inverseFieldName) throws Exception {
+        String command = "field oneToOne --named " + fieldName + " --fieldType " + type;
+        if (inverseFieldName != null && !inverseFieldName.equals("")) {
+            command += " --inverseFieldName " + inverseFieldName;
+        }
+        getShell().execute(command);
+    }
+
+    private void generateManyToOneField(String fieldName, String type, String inverseFieldName) throws Exception {
+        String command = "field manyToOne --named " + fieldName + " --fieldType " + type;
+        if (inverseFieldName != null && !inverseFieldName.equals("")) {
+            command += " --inverseFieldName " + inverseFieldName;
+        }
+        getShell().execute(command);
+    }
+
+    private void generateOneToManyField(String fieldName, String type, String inverseFieldName) throws Exception {
+        String command = "field oneToMany --named " + fieldName + " --fieldType " + type;
+        if (inverseFieldName != null && !inverseFieldName.equals("")) {
+            command += " --inverseFieldName " + inverseFieldName;
+        }
+        getShell().execute(command);
+    }
+
+    private void generateManyToManyField(String fieldName, String type, String inverseFieldName) throws Exception {
+        String command = "field manyToMany --named " + fieldName + " --fieldType " + type;
+        if (inverseFieldName != null && !inverseFieldName.equals("")) {
+            command += " --inverseFieldName " + inverseFieldName;
+        }
+        getShell().execute(command);
     }
 
     private void generateNotNullConstraint(String fieldName) throws Exception {

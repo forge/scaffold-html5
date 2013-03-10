@@ -104,6 +104,7 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
     public List<Resource<?>> generateIndex(String targetDir, Resource<?> template, boolean overwrite) {
         ArrayList<Resource<?>> result = new ArrayList<Resource<?>>();
         List<String> entityNames = new ArrayList<String>();
+        // TODO: Use a better way to provide the list of all entities
         WebResourceFacet web = this.project.getFacet(WebResourceFacet.class);
         FileResource<?> partialsDirectory = web.getWebResource("views");
         for (Resource<?> resource : partialsDirectory.listResources()) {
