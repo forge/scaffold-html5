@@ -272,5 +272,28 @@ public class FreemarkerClientPartialsBasicPropertyTest {
         assertThat(formInputElement.attr("type"), equalTo("datetime"));
         assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase("SampleEntity")+"."+"auditTimestamp"));
     }
+    
+    @Test
+    public void testGenerateBasicBooleanProperty() throws Exception {
+        Map<String, String> nameProperties = new HashMap<String, String>();
+        nameProperties.put("name", "optForMail");
+        nameProperties.put("type", "boolean");
+        
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("entityName", "SampleEntity");
+        root.put("property", nameProperties);
+        String output = freemarkerClient.processFTL(root, "views/includes/basicPropertyDetail.html.ftl");
+        Document html = Jsoup.parseBodyFragment(output);
+        assertThat(output.trim(), not(equalTo("")));
+        
+        Elements container = html.select("div.control-group");
+        assertThat(container, notNullValue());
+        assertThat(container.attr("ng-class"), not(equalTo("")));
+        
+        Elements formInputElement = html.select("div.control-group input");
+        assertThat(formInputElement.attr("id"), equalTo("optForMail"));
+        assertThat(formInputElement.attr("type"), equalTo("checkbox"));
+        assertThat(formInputElement.attr("ng-model"), equalTo(StringUtils.camelCase("SampleEntity")+"."+"optForMail"));
+    }
 
 }

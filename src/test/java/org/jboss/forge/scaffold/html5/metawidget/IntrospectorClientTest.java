@@ -94,6 +94,20 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
     }
 
     @Test
+    public void testInspectBooleanField() throws Exception {
+        String entityName = "Customer";
+        String fieldName = "optForMail";
+        generateSimpleEntity(entityName);
+        generateBooleanField(fieldName);
+
+        JavaClass klass = getJavaClassFor(entityName);
+        List<Map<String, String>> inspectionResult = introspectorClient.inspect(klass);
+
+        assertThat(inspectionResult, hasItemWithEntry("name", fieldName));
+        assertThat(inspectionResult, hasItemWithEntry("type", "boolean"));
+    }
+    
+    @Test
     public void testInspectDateField() throws Exception {
         String entityName = "Customer";
         String fieldName = "dateOfBirth";
@@ -412,6 +426,10 @@ public class IntrospectorClientTest extends AbstractHtml5ScaffoldTest {
 
     private void generateStringField(String fieldName) throws Exception {
         getShell().execute("field string --named " + fieldName);
+    }
+    
+    private void generateBooleanField(String fieldName) throws Exception {
+        getShell().execute("field boolean --named " + fieldName);
     }
 
     private void generateTemporalField(String fieldName, TemporalType type) throws Exception {
