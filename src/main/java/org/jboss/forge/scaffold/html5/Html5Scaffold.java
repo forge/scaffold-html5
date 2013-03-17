@@ -85,10 +85,12 @@ public class Html5Scaffold extends BaseFacet implements ScaffoldProvider {
                 .getResourceAsStream("/scaffold/angularjs/scripts/vendor/angular.js"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/scripts/vendor/angular-resource.js"),
                 getClass().getResourceAsStream("/scaffold/angularjs/scripts/vendor/angular-resource.js"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/images/forge-logo.png"), getClass()
-                .getResourceAsStream("/scaffold/angularjs/images/forge-logo.png"), overwrite));
-        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/images/forge-logo.png"), getClass()
-                .getResourceAsStream("/scaffold/angularjs/images/forge-logo.png"), overwrite));
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/img/forge-logo.png"), getClass()
+                .getResourceAsStream("/scaffold/angularjs/img/forge-logo.png"), overwrite));
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/img/glyphicons-halflings.png"), getClass()
+                .getResourceAsStream("/scaffold/angularjs/img/glyphicons-halflings.png"), overwrite));
+        result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/img/glyphicons-halflings-white.png"), getClass()
+                .getResourceAsStream("/scaffold/angularjs/img/glyphicons-halflings-white.png"), overwrite));
         result.add(ScaffoldUtil.createOrOverwrite(this.prompt, web.getWebResource("/test/lib/angular/angular-scenario.js"),
                 getClass().getResourceAsStream("/scaffold/angularjs/test/lib/angular/angular-scenario.js"), overwrite));
         return result;
